@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "author": "nihil2501@gmail.com",
+  "name": "Invertus",
+  "description": "Simple, sticky, keyboard-driven webpage color inversion.",
+  "version": "0.1",
+  "action": {
+    "default_title": "Invertus [Ctrl+I]",
+    "default_icon": "icons/action/inactive.png"
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "background": {
+    "service_worker": "js/service_worker.js"
+  },
+  "permissions": [
+    "scripting",
+    "webNavigation",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": ["*://*/*"],
+  "commands": {
+    "_execute_action": {
+      "description": "Invert this webpage's colors.",
+      "suggested_key": {
+        "mac": "MacCtrl+I"
+      }
+    }
+  }
+}
