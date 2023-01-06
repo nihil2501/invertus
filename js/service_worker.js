@@ -1,5 +1,5 @@
-import { restore, update } from "./core.js"
-import { whenHostnameValid } from "./helpers.js"
+import { restore, update } from "./core.js";
+import { whenHostnameValid } from "./helpers.js";
 
 chrome.webNavigation.onCommitted.addListener(({ url, tabId }) => {
   whenHostnameValid(url, hostname => restore({ hostname, tabId }));
