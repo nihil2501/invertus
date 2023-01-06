@@ -27,6 +27,7 @@ const updateTab = ({ tabId, active }) => {
 
   chrome.scripting[properties.changeCSS]({
     files: ["css/style.css"],
+    origin: "USER",
     target: {
       allFrames: true,
       tabId,
