@@ -5,21 +5,33 @@ export const onPageCompleted = async ({ hostname, tabId }) => {
   }
 };
 
-export const onActionClicked = async({ hostname }) => {
-	const active = !(await fetchStorage(hostname));
-	updateAppearances({ hostname, active });
-	updateStorage({ hostname, active });
+export const onCommandIssued = async ({ command, hostname }) => {
+  let active;
+  switch(command) {
+    case "activate":
+      active = true;
+      break;
+    case "deactivate":
+      active = false;
+      break;
+    default:
+      console.warn("command not recognized", command);
+      return;
+  }
+
+  updateAppearances({ hostname, active });
+  updateStorage({ hostname, active });
 };
 
 const updateAppearances = async ({ hostname, active }) => {
-	// This may not be strictly accurate for difference between `host` and
-	// `hostname` which I think is `username:login`.
-	const query = { url: `*://${hostname}/*` };
-	const tabs = await chrome.tabs.query(query);
+  // This may not be strictly accurate for difference between `host` and
+  // `hostname` which I think is `username:login`.
+  const query = { url: `*://${hostname}/*` };
+  const tabs = await chrome.tabs.query(query);
 
-	for (const { id: tabId } of tabs) {
-		updateAppearance({ tabId, active });
-	}
+  for (const { id: tabId } of tabs) {
+    updateAppearance({ tabId, active });
+  }
 };
 
 // TODO: will need this for constrained-version.
