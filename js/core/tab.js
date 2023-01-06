@@ -14,11 +14,8 @@ export const update = ({ tabId, active }) => {
 
   chrome.scripting[properties.changeCSS]({
     files: ["css/style.css"],
+    target: { tabId },
     origin: "USER",
-    target: {
-      allFrames: true,
-      tabId,
-    }
   });
 
   const path = `/icons/action/${properties.file}`;

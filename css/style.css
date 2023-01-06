@@ -1,7 +1,8 @@
-html {
-  filter: invert(0.96) hue-rotate(180deg) !important;
+:root, img, image {
+  filter: invert(96%) hue-rotate(180deg) !important;
 }
 
-img {
-  filter: invert(0.96) hue-rotate(180deg) !important;
+/* In case there is none already like on Discogs. */
+body {
+  background-color: white;
 }
