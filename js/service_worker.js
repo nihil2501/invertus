@@ -6,8 +6,13 @@ chrome.webNavigation.onCompleted.addListener(
 );
 
 chrome.action.onClicked.addListener(
-  pipeline([
-    normalizePayload({ id: "tabId" }),
-    validly(onActionClicked),
-  ])
+  validly(onActionClicked)
 );
+
+// TODO: will need this for constrained-version.
+// chrome.action.onClicked.addListener(
+//   pipeline([
+//     normalizePayload({ id: "tabId" }),
+//     validly(onActionClicked),
+//   ])
+// );

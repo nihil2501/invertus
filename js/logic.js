@@ -5,12 +5,29 @@ export const onPageCompleted = async ({ hostname, tabId }) => {
   }
 };
 
-export const onActionClicked = async ({ hostname, tabId }) => {
-  const active = !(await fetchStorage(hostname));
-	// TODO: replace with updateAppearances({ hostname, active })
-  updateAppearance({ tabId, active });
-  updateStorage({ hostname, active });
+export const onActionClicked = async({ hostname }) => {
+	const active = !(await fetchStorage(hostname));
+	updateAppearances({ hostname, active });
+	updateStorage({ hostname, active });
 };
+
+const updateAppearances = async ({ hostname, active }) => {
+	// This may not be strictly accurate for difference between `host` and
+	// `hostname` which I think is `username:login`.
+	const query = { url: `*://${hostname}/*` };
+	const tabs = await chrome.tabs.query(query);
+
+	for (const { id: tabId } of tabs) {
+		updateAppearance({ tabId, active });
+	}
+};
+
+// TODO: will need this for constrained-version.
+// export const onActionClicked = async ({ hostname, tabId }) => {
+//   const active = !(await fetchStorage(hostname));
+//   updateAppearance({ tabId, active });
+//   updateStorage({ hostname, active });
+// };
 
 const updateAppearance = ({ tabId, active }) => {
   const changeCSS = active ? "insertCSS" : "removeCSS";

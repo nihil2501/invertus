@@ -33,13 +33,13 @@ export const validly = (callback) => {
 
 const getHostname = (url) => {
   url = new URL(url);
-  const urlInvalid = urlInvalidConditions.some((condition) => {
-    return url[condition.property] === condition.value;
-  });
-
-  if (!urlInvalid) {
-    return url.hostname;
+  for (const condition of urlInvalidConditions) {
+    if (url[condition.property] === condition.value) {
+      return;
+    }
   }
+
+  return url.hostname;
 }
 
 const urlInvalidConditions = [
