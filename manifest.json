@@ -15,7 +15,8 @@
     "128": "icons/128.png"
   },
   "background": {
-    "service_worker": "js/service_worker.js"
+    "service_worker": "js/service_worker.js",
+    "type": "module"
   },
   "permissions": [
     "scripting",
