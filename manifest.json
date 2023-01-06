@@ -5,7 +5,7 @@
   "description": "Simple, sticky, keyboard-driven webpage color inversion.",
   "version": "0.1",
   "action": {
-    "default_title": "Invertus",
+    "default_title": "Invertus [Ctrl+I]",
     "default_icon": "icons/action/inactive.png"
   },
   "icons": {
@@ -26,18 +26,10 @@
   ],
   "host_permissions": ["*://*/*"],
   "commands": {
-    "activate": {
+    "_execute_action": {
       "description": "Invert this webpage's colors.",
       "suggested_key": {
-        "default": "Ctrl+I",
         "mac": "MacCtrl+I"
-      }
-    },
-    "deactivate": {
-      "description": "Restore this webpage's colors.",
-      "suggested_key": {
-        "default": "Ctrl+Shift+I",
-        "mac": "MacCtrl+Shift+I"
       }
     }
   }
