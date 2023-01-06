@@ -13,3 +13,8 @@ export const update = async ({ hostname, tabId }) => {
   tab.updateAll({ hostname, active });
   storage.update({ hostname, active });
 };
+
+export const simpleUpdate = async ({ tabId }) => {
+  const active = !await tab.getCurrentActive({ tabId });
+  tab.update({ tabId, active });
+};
