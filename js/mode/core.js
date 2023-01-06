@@ -8,10 +8,10 @@ export const restore = async ({ hostname, tabId }) => {
   }
 };
 
-export const update = async ({ hostname, tabId }) => {
+export const fullUpdate = async ({ hostname, tabId }) => {
   const active = !await tab.getCurrentActive({ tabId });
-  tab.updateAll({ hostname, active });
   storage.update({ hostname, active });
+  tab.updateAll({ hostname, active });
 };
 
 export const simpleUpdate = async ({ tabId }) => {

@@ -20,11 +20,15 @@
   },
   "permissions": [
     "scripting",
-    "webNavigation",
     "storage",
     "activeTab"
   ],
-  "host_permissions": ["*://*/*"],
+  "optional_permissions": [
+    "webNavigation"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
+  ],
   "commands": {
     "_execute_action": {
       "description": "Invert this webpage's colors.",

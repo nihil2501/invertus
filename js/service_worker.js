@@ -1,14 +1,25 @@
-import { restore, update, simpleUpdate } from "./core.js";
-import { whenHostnameValid } from "./helpers.js";
+import SimpleMode from "./mode/simple.js";
+import FullMode from "./mode/full.js";
 
-chrome.webNavigation.onCommitted.addListener(({ url, tabId }) => {
-  whenHostnameValid(url, hostname => restore({ hostname, tabId }));
-});
+const reconcileModeWithPermissions = async () => {
+  const permissions = await chrome.permissions.getAll();
 
-chrome.action.onClicked.addListener(({ url, id: tabId }) => {
-  whenHostnameValid(url, hostname => update({ hostname, tabId }));
-});
+  if (SimpleMode.permittedBy(permissions)) {
+    if (FullMode.permittedBy(permissions)) {
+      SimpleMode.removeListeners();
+      FullMode.ensureListenersAdded();
+    } else {
+      SimpleMode.ensureListenersAdded();
+    }
+  }
+};
 
-// chrome.action.onClicked.addListener(({ url, id: tabId }) => {
-//   whenHostnameValid(url, () => simpleUpdate({ tabId }));
-// });
+chrome.permissions.onRemoved.addListener(
+  reconcileModeWithPermissions
+);
+
+chrome.permissions.onAdded.addListener(
+  reconcileModeWithPermissions
+);
+
+reconcileModeWithPermissions();
