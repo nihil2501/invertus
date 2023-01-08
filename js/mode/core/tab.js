@@ -1,7 +1,21 @@
+const cssFile = "css/style.css";
+const activeProperties = {
+  true: {
+    changeCSS: "insertCSS",
+    file: "/icons/action/active.png",
+    title: "Invertus (active)",
+  },
+  false: {
+    changeCSS: "removeCSS",
+    file: "/icons/action/inactive.png",
+    title: "Invertus (inactive)",
+  },
+};
+
 export const updateAll = async ({ hostname, active }) => {
   // This may not be strictly accurate for difference between `host` and
   // `hostname` which I think is `username:login`.
-  const query = { url: `*://${hostname}/*` };
+  const query = { url: hostnameMatchPattern(hostname) };
   const tabs = await chrome.tabs.query(query);
 
   for (const { id: tabId } of tabs) {
@@ -13,12 +27,12 @@ export const update = ({ tabId, active }) => {
   const properties = activeProperties[active];
 
   chrome.scripting[properties.changeCSS]({
-    files: ["css/style.css"],
+    files: [cssFile],
     target: { tabId },
-    origin: "USER",
+    origin: chrome.scripting.StyleOrigin.USER,
   });
 
-  const path = `/icons/action/${properties.file}`;
+  const path = properties.file;
   chrome.action.setIcon({ tabId, path });
 
   const title = properties.title;
@@ -30,15 +44,6 @@ export const getCurrentActive = async (details) => {
   return title === activeProperties.true.title;
 };
 
-const activeProperties = {
-  true: {
-    changeCSS: "insertCSS",
-    file: "active.png",
-    title: "Invertus (active)",
-  },
-  false: {
-    changeCSS: "removeCSS",
-    file: "inactive.png",
-    title: "Invertus (inactive)",
-  },
+const hostnameMatchPattern = (hostname) => {
+  return `*://${hostname}/*`;
 };

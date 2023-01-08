@@ -20,10 +20,10 @@
   },
   "permissions": [
     "scripting",
-    "storage",
     "activeTab"
   ],
   "optional_permissions": [
+    "storage",
     "webNavigation"
   ],
   "optional_host_permissions": [

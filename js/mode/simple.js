@@ -7,20 +7,19 @@ export default new Mode({
     origins: [],
     permissions: [
       "scripting",
-      "storage",
       "activeTab",
     ],
   },
   getEventListeners: () => {
-		return [
-	    {
-	      event: chrome.action.onClicked,
-	      listener: onActionClickedListener,
-	    },
-	  ]
-	},
+    return [
+      {
+        event: chrome.action.onClicked,
+        listener: ({ url, id: tabId }) => {
+          whenHostnameValid(url, () => {
+            update({ tabId });
+          });
+        },
+      },
+    ];
+  },
 });
-
-const onActionClickedListener = ({ url, id: tabId }) => {
-  whenHostnameValid(url, () => update({ tabId }));
-};
