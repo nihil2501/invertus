@@ -3,7 +3,7 @@ import { simpleUpdate as update } from "./core.js";
 import Mode from "../mode.js";
 
 export default new Mode({
-  additionalRequiredPermissions: {
+  requiredPermissions: {
     origins: [],
     permissions: [
       "scripting",

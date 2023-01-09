@@ -1,30 +1,35 @@
 export default class Mode {
-  constructor({ additionalRequiredPermissions, getEventListeners }) {
-    // `additionalRequiredPermissions` in the sense that we're assuming that
-    // once we're asking this question of this `Mode`, any other permission
-    // requirements have already been determined to have been met.
-    this.additionalRequiredPermissions = additionalRequiredPermissions;
+  constructor({ requiredPermissions, getEventListeners, inheritedMode }) {
+    this.requiredPermissions = requiredPermissions;
     this.getEventListeners = getEventListeners;
+    this.inheritedMode = inheritedMode;
   }
 
-  ensureListenersAdded() {
-    this.removeListeners();
-    this.#modifyListeners("addListener");
+  reconcile(permissions) {
+    const inheritedModeReconciled =
+      this.inheritedMode === undefined ||
+        this.inheritedMode.reconcile(permissions);
+
+    if (!inheritedModeReconciled) { return false; }
+    if (!this.#permittedBy(permissions)) { return false; }
+
+    this.#ensureListenersAdded();    
+    return true;
   }
 
-  removeListeners() {
-    this.#modifyListeners("removeListener");
-  }
-
-  #modifyListeners(method) {
+  #ensureListenersAdded() {
     for (const eventListener of this.getEventListeners()) {
-      eventListener.event[method](
+      eventListener.event.removeListener(
+        eventListener.listener
+      );
+
+      eventListener.event.addListener(
         eventListener.listener
       );
     }
   }
 
-  permittedBy(permissions) {
+  #permittedBy(permissions) {
     return (
       this.#typePermittedBy("origins", permissions) &&
         this.#typePermittedBy("permissions", permissions)
@@ -32,7 +37,7 @@ export default class Mode {
   }
 
   #typePermittedBy(type, permissions) {
-    return this.additionalRequiredPermissions[type].every((permission) => {
+    return this.requiredPermissions[type].every((permission) => {
       return permissions[type].includes(permission);
     });
   }

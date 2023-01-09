@@ -1,9 +1,11 @@
+import Mode from "../mode.js";
+import SimpleMode from "./simple.js";
 import { whenHostnameValid } from "./helpers.js";
 import { restore, fullUpdate as update } from "./core.js";
-import Mode from "../mode.js";
 
 export default new Mode({
-  additionalRequiredPermissions: {
+  inheritedMode: SimpleMode,
+  requiredPermissions: {
     origins: [
       "*://*/*",
     ],
@@ -23,8 +25,9 @@ export default new Mode({
         },
       },
       {
-        event: chrome.action.onClicked,
-        listener: ({ url, id: tabId }) => {
+        event: chrome.commands.onCommand,
+        // We only have one command so `command` argument is uninformative.
+        listener: (command, { url, id: tabId }) => {
           whenHostnameValid(url, (hostname) => {
             update({ hostname, tabId });
           });

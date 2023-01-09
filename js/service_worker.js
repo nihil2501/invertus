@@ -1,25 +1,16 @@
-import SimpleMode from "./mode/simple.js";
-import FullMode from "./mode/full.js";
+import Mode from "./mode/full.js";
 
-const reconcileModeWithPermissions = async () => {
+const reconcileMode = async () => {
   const permissions = await chrome.permissions.getAll();
-
-  if (SimpleMode.permittedBy(permissions)) {
-    if (FullMode.permittedBy(permissions)) {
-      SimpleMode.removeListeners();
-      FullMode.ensureListenersAdded();
-    } else {
-      SimpleMode.ensureListenersAdded();
-    }
-  }
+  Mode.reconcile(permissions);
 };
 
 chrome.permissions.onRemoved.addListener(
-  reconcileModeWithPermissions
+  reconcileMode
 );
 
 chrome.permissions.onAdded.addListener(
-  reconcileModeWithPermissions
+  reconcileMode
 );
 
-reconcileModeWithPermissions();
+reconcileMode();
