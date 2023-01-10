@@ -4,7 +4,7 @@ const activeProperties = {
     changeCSS: "insertCSS",
     iconPath: "/icons/action/active.png",
     iconTitle: "Invertus (active)",
-    persistedBadgeText: "*",
+    persistedBadgeText: " ",
   },
   false: {
     changeCSS: "removeCSS",
