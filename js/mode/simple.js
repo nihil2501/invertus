@@ -14,12 +14,15 @@ export default new Mode({
     return [
       {
         event: chrome.action.onClicked,
-        listener: ({ url, id: tabId }) => {
-          whenHostnameValid(url, () => {
-            update({ tabId });
-          });
-        },
+        listener: onActionClickedListener,
       },
     ];
   },
 });
+
+const onActionClickedListener =
+  ({ url, id: tabId }) => {
+    whenHostnameValid(url, () => {
+      update({ tabId });
+    });
+  };
