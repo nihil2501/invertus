@@ -42,7 +42,7 @@ const onNavigationCommittedListener =
   };
 
 const onCommandListener =
-  (command, { url, id: tabId }) => {
+  (_command, { url, id: tabId }) => {
     whenHostnameValid(url, (hostname) => {
       update({ hostname, tabId });
     });

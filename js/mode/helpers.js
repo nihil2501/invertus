@@ -1,13 +1,14 @@
-export const whenHostnameValid = (url, callback) => {
-  url = new URL(url);
-  for (const rule of urlInvalidRules) {
-    if (url[rule.property] === rule.value) {
-      return;
+export const whenHostnameValid =
+  (url, callback) => {
+    url = new URL(url);
+    for (const rule of urlInvalidRules) {
+      if (url[rule.property] === rule.value) {
+        return;
+      }
     }
-  }
 
-  callback(url.hostname);
-};
+    callback(url.hostname);
+  };
 
 const urlInvalidRules = [
   { property: "hostname", value: "ogs.google.com" },

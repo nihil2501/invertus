@@ -14,48 +14,85 @@ const activeProperties = {
   },
 };
 
-export const updateAll = async ({ hostname, active, persisted }) => {
-  // This may not be strictly accurate for difference between `host` and
-  // `hostname` which I think is `username:login`.
-  const query = { url: hostnameMatchPattern(hostname) };
-  const tabs = await chrome.tabs.query(query);
-
-  for (const { id: tabId } of tabs) {
-    update({ tabId, active, persisted });
-  }
-};
-
-// Need better conceptualization of the `persisted` stuff.
-export const update = async ({ tabId, active, persisted }) => {
-  const properties = activeProperties[active];
-
-  // To not over-insert the CSS.
-  const previousActive = await getActive({ tabId });
-  if (active !== previousActive) {
-    chrome.scripting[properties.changeCSS]({
-      files: [cssFile],
-      target: { tabId },
-      origin: chrome.scripting.StyleOrigin.USER,
+export const toggleAll =
+  async ({ hostname, tabId, persisted}) => {
+    return await toggling({ tabId }, (active) => {
+      updateAll({
+        hostname,
+        active,
+        persisted
+      });
     });
   }
 
-  const path = properties.iconPath;
-  chrome.action.setIcon({ tabId, path });
+export const updateAll =
+  async ({ hostname, active, persisted }) => {
+    // This may not be strictly accurate for difference between `host` and
+    // `hostname` which I think is `username:login`.
+    const query = { url: hostnameMatchPattern(hostname) };
+    const tabs = await chrome.tabs.query(query);
 
-  const title = properties.iconTitle;
-  chrome.action.setTitle({ tabId, title });
+    for (const { id: tabId } of tabs) {
+      update({
+        tabId,
+        active,
+        persisted
+      });
+    }
+  };
 
-  if (persisted) {
-    const text = properties.persistedBadgeText;
-    chrome.action.setBadgeText({ tabId, text });
+export const toggle =
+  async ({ tabId, persisted }) => {
+    return await toggling({ tabId }, (active) => {
+      update({
+        tabId,
+        active,
+        persisted
+      });
+    });
   }
-};
 
-export const getActive = async (details) => {
-  const title = await chrome.action.getTitle(details);
-  return title === activeProperties.true.iconTitle;
-};
+// Need better conceptualization of the `persisted` stuff.
+export const update =
+  async ({ tabId, active, persisted }) => {
+    const properties = activeProperties[active];
 
-const hostnameMatchPattern = (hostname) => {
-  return `*://${hostname}/*`;
-};
+    // To not over-insert the CSS.
+    const previousActive = await getActive({ tabId });
+    if (active !== previousActive) {
+      chrome.scripting[properties.changeCSS]({
+        origin: chrome.scripting.StyleOrigin.USER,
+        target: { tabId },
+        files: [cssFile],
+      });
+    }
+
+    const path = properties.iconPath;
+    chrome.action.setIcon({ tabId, path });
+
+    const title = properties.iconTitle;
+    chrome.action.setTitle({ tabId, title });
+
+    if (persisted) {
+      const text = properties.persistedBadgeText;
+      chrome.action.setBadgeText({ tabId, text });
+    }
+  };
+
+const toggling =
+  async (details, callback) => {
+    const active = !await getActive(details);
+    callback(active);
+    return active;
+  }
+
+const getActive =
+  async (details) => {
+    const title = await chrome.action.getTitle(details);
+    return title === activeProperties.true.iconTitle;
+  };
+
+const hostnameMatchPattern =
+  (hostname) => {
+    return `*://${hostname}/*`;
+  };
