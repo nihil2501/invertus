@@ -35,9 +35,16 @@ export default new Mode({
 });
 
 const onNavigationCommittedListener =
-  ({ url, tabId }) => {
+  ({ url, tabId, frameId }) => {
+    // Is this the most relevant way to discriminate? Is it always and only an
+    // outer frame navigation and ensuing CSS insertion that has the desired
+    // result?
+    if (frameId !== 0) {
+      return;
+    }
+
     console.debug("full.onNavigationCommittedListener");
-  
+
     whenHostnameValid(url, (hostname) => {
       restore({ hostname, tabId });
     });
