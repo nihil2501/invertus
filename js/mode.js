@@ -42,31 +42,8 @@ export default
       const permitted = this.#permittedBy(permissions);
       console.debug("permitted", permitted);
 
-      if (!permitted) {
-        this.#replaceEventListeners(
-          this.promotingMode.getEventListeners(),
-          { withNothing: true },
-        );
-
-        this.#replaceEventListeners(
-          this.#getPromotingEventListeners(),
-          { withNothing: false },
-        );
-
-        return false;
-      }
-
-      this.#replaceEventListeners(
-        this.#getPromotingEventListeners(),
-        { withNothing: true },
-      );
-
-      this.#replaceEventListeners(
-        this.#getAllEventListeners(),
-        { withNothing: false },
-      );
-
-      return true;
+      this.#expressMobility({ promoting: !permitted });
+      return permitted;
     }
 
     #reconcilePromotingMode(permissions) {
@@ -87,6 +64,18 @@ export default
       return (
         typePermittedBy("origins", permissions) &&
           typePermittedBy("permissions", permissions)
+      );
+    }
+
+    #expressMobility({ promoting }) {
+      this.#replaceEventListeners(
+        this.#getAllEventListeners(),
+        { withNothing: promoting },
+      );
+
+      this.#replaceEventListeners(
+        this.#getPromotingEventListeners(),
+        { withNothing: !promoting },
       );
     }
 
