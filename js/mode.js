@@ -31,7 +31,8 @@ export default
       this.promotingMode = promotingMode;
     }
 
-    reconcile(permissions) {
+    reconcile(permissions, initial) {
+      this.initial = initial;
       console.debug("reconciling permissions", permissions);
 
       const promotingModePermitted = this.#reconcilePromotingMode(permissions);
@@ -49,7 +50,8 @@ export default
     #reconcilePromotingMode(permissions) {
       return !this.promotingMode ||
         this.promotingMode.mode.reconcile(
-          permissions
+          permissions,
+          this.initial
         );
     }
 
@@ -69,7 +71,9 @@ export default
 
     #expressMobility({ promoting }) {
       this.#replaceEventListeners(
-        this.#getAllEventListeners(),
+        this.initial && promoting ?
+          this.promotingMode.getEventListeners() :
+          this.#getAllEventListeners(),
         { withNothing: promoting },
       );
 

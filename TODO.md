@@ -12,3 +12,5 @@
 * optionally persist in full mode
 * revoking permissions leaves siblings inconsistent--probably not fixable since no permission
 * decide among all combinations on ideal behavior of persist action
+* 2 edge cases kinda, retract permissions leaves some tabs stranded / unable to be bulk updated
+  * re-grant permissions from action when tab was persisted will actually toggle-off. "rare" behavior wrt set of all possible scenarios.

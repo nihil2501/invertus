@@ -1,8 +1,8 @@
 import Mode from "./mode/full.js";
 
-const reconcileMode = async () => {
+const reconcileMode = async (_permissions, initial) => {
   const permissions = await chrome.permissions.getAll();
-  Mode.reconcile(permissions);
+  Mode.reconcile(permissions, initial);
 };
 
 chrome.permissions.onRemoved.addListener(
@@ -13,4 +13,4 @@ chrome.permissions.onAdded.addListener(
   reconcileMode
 );
 
-reconcileMode();
+reconcileMode({}, true);
