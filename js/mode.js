@@ -34,7 +34,8 @@ export default
     reconcile(permissions) {
       console.debug("reconciling permissions", permissions);
 
-      if (!this.#reconcilePromotingMode(permissions)) {
+      const promotingModePermitted = this.#reconcilePromotingMode(permissions);
+      if (!promotingModePermitted) {
         return false;
       }
 
@@ -76,16 +77,17 @@ export default
     }
 
     #permittedBy(permissions) {
-      return (
-        this.#typePermittedBy("origins", permissions) &&
-          this.#typePermittedBy("permissions", permissions)
-      );
-    }
+      const typePermittedBy =
+        (type, permissions) => {
+          return this.requiredPermissions[type].every((permission) => {
+            return permissions[type].includes(permission);
+          });
+        };
 
-    #typePermittedBy(type, permissions) {
-      return this.requiredPermissions[type].every((permission) => {
-        return permissions[type].includes(permission);
-      });
+      return (
+        typePermittedBy("origins", permissions) &&
+          typePermittedBy("permissions", permissions)
+      );
     }
 
     #replaceEventListeners(eventListeners, { withNothing }) {
