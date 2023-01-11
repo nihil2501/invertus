@@ -3,7 +3,7 @@ export default
     constructor({
       requiredPermissions,
       getEventListeners,
-      promotingMode
+      promotingMode,
     }) {
       this.requiredPermissions = requiredPermissions;
 
@@ -25,6 +25,9 @@ export default
       // Then, going forward, as a consequence of a reaction to permission change
       // events, the promoted behavior gets installed while the promoting
       // behavior is uninstalled.
+      //
+      // Be mindful that `promotingMode.mode.getEventListeners` and
+      // `promotingMode.getEventListeners` are distinct concepts.
       this.promotingMode = promotingMode;
     }
 
@@ -40,7 +43,13 @@ export default
 
       if (!permitted) {
         this.#replaceEventListeners(
+          this.promotingMode.getEventListeners(),
+          { withNothing: true },
+        );
+
+        this.#replaceEventListeners(
           this.#getPromotingEventListeners(),
+          { withNothing: false },
         );
 
         return false;
@@ -53,6 +62,7 @@ export default
 
       this.#replaceEventListeners(
         this.#getAllEventListeners(),
+        { withNothing: false },
       );
 
       return true;
@@ -78,9 +88,7 @@ export default
       });
     }
 
-    #replaceEventListeners(eventListeners, options = {}) {
-      const { withNothing = false } = options;
-
+    #replaceEventListeners(eventListeners, { withNothing }) {
       for (const { event, listener } of eventListeners) {
         console.debug("remove listener", listener);
         event.removeListener(listener);
