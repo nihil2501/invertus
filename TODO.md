@@ -14,3 +14,6 @@
 * decide among all combinations on ideal behavior of persist action
 * 2 edge cases kinda, retract permissions leaves some tabs stranded / unable to be bulk updated
   * re-grant permissions from action when tab was persisted will actually toggle-off. "rare" behavior wrt set of all possible scenarios.
+  * should just reload page (but i don't really see a nice spot in the code for the idea)
+  * or rather just update with true. again don't see where to put the code for the idea.
+  * remodel incoming: associating more deeply; promoting behavior, permissions per behavior

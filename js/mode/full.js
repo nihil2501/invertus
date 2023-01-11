@@ -43,9 +43,8 @@ const onNavigationCommittedListener =
       return;
     }
 
-    console.debug("full.onNavigationCommittedListener");
-
     whenHostnameValid(url, (hostname) => {
+      console.debug("full.onNavigationCommittedListener");
       restore({ hostname, tabId });
     });
   };
@@ -53,9 +52,8 @@ const onNavigationCommittedListener =
 const onCommandListener =
   // There is only one command declared for the extension: `full-update`
   (_command, { url, id: tabId }) => {
-    console.debug("full.onCommandListener");
-  
     whenHostnameValid(url, (hostname) => {
+      console.debug("full.onCommandListener");
       update({ hostname, tabId });
     });
   };
