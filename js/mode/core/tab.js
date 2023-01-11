@@ -39,6 +39,8 @@ export const updateAll =
         persisted
       });
     }
+
+    return active;
   };
 
 export const toggle =
@@ -77,6 +79,8 @@ export const update =
       const text = properties.persistedBadgeText;
       chrome.action.setBadgeText({ tabId, text });
     }
+
+    return active;
   };
 
 const toggling =

@@ -22,6 +22,8 @@ export default new Mode({
 
 const onActionClickedListener =
   ({ url, id: tabId }) => {
+    console.debug("simple.onActionClickedListener");
+
     whenHostnameValid(url, () => {
       update({ tabId });
     });

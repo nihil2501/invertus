@@ -29,11 +29,16 @@ export default
     }
 
     reconcile(permissions) {
+      console.debug("reconciling permissions", permissions);
+
       if (!this.#reconcilePromotingMode(permissions)) {
         return false;
       }
 
-      if (!this.#permittedBy(permissions)) {
+      const permitted = this.#permittedBy(permissions);
+      console.debug("permitted", permitted);
+
+      if (!permitted) {
         this.#replaceEventListeners(
           this.#getPromotingEventListeners(),
         );
@@ -77,8 +82,11 @@ export default
       const { withNothing = false } = options;
 
       for (const { event, listener } of eventListeners) {
+        console.debug("remove listener", listener);
         event.removeListener(listener);
+
         if (!withNothing) {
+          console.debug("add listener", listener);
           event.addListener(listener);
         }
       }
@@ -121,6 +129,8 @@ export default
 
     #wrapPromotingListener(listener) {
       return async (...args) => {
+        console.debug("requesting permissions", this.requiredPermissions);
+
         const granted =
           await chrome.permissions.request(
             this.requiredPermissions,

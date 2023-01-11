@@ -36,13 +36,18 @@ export default new Mode({
 
 const onNavigationCommittedListener =
   ({ url, tabId }) => {
+    console.debug("full.onNavigationCommittedListener");
+  
     whenHostnameValid(url, (hostname) => {
       restore({ hostname, tabId });
     });
   };
 
 const onCommandListener =
+  // There is only one command declared for the extension: `full-update`
   (_command, { url, id: tabId }) => {
+    console.debug("full.onCommandListener");
+  
     whenHostnameValid(url, (hostname) => {
       update({ hostname, tabId });
     });
