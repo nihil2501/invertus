@@ -18,15 +18,11 @@ const activeProperties = {
 };
 
 export const updateAll =
-  async ({ hostname, active, tabId, persisted }) => {
+  async ({ hostname, active, persisted }) => {
     // This may not be strictly accurate for difference between `host` and
     // `hostname` which I think is `username:login`.
     const query = { url: hostnameMatchPattern(hostname) };
     const tabs = await chrome.tabs.query(query);
-
-    if (active == undefined) {
-      active = await getActive({ tabId });
-    }
 
     for (const tab of tabs) {
       update({
@@ -42,7 +38,6 @@ export const updateAll =
 // Need better conceptualization of the `persisted` stuff.
 export const update =
   async ({ tabId, active, persisted }) => {
-    // To not over-insert the CSS.
     const previousActive = await getActive({ tabId });
     if (active === undefined) {
       active = !previousActive;
@@ -50,6 +45,7 @@ export const update =
 
     const properties = activeProperties[active];
 
+    // To not double-insert the CSS.
     if (active !== previousActive) {
       chrome.scripting[properties.changeCSS]({
         // Hack because I can't figure out how to just refer to the file
