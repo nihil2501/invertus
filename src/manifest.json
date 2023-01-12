@@ -38,7 +38,7 @@
       }
     },
     "full-update": {
-      "description": "Remember/forget to always invertt this webpage's colors.",
+      "description": "Remember/forget to always invert this webpage's colors.",
       "suggested_key": {
         "default": "Ctrl+Shift+I",
         "mac": "MacCtrl+Shift+I"

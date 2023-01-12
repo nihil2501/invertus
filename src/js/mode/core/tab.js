@@ -42,7 +42,6 @@ export const updateAll =
 // Need better conceptualization of the `persisted` stuff.
 export const update =
   async ({ tabId, active, persisted }) => {
-    console.log(cssFile);
     // To not over-insert the CSS.
     const previousActive = await getActive({ tabId });
     if (active === undefined) {
@@ -53,9 +52,11 @@ export const update =
 
     if (active !== previousActive) {
       chrome.scripting[properties.changeCSS]({
+        // Hack because I can't figure out how to just refer to the file
+        // adequately.
+        files: [cssFile.match(/style\..*\.css/)[0]],
         origin: chrome.scripting.StyleOrigin.USER,
         target: { tabId },
-        files: [cssFile],
       });
     }
 
