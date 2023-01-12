@@ -1,9 +1,6 @@
-// import cssFile from "url:/src/css/style.css";
-// import activeIconPath from "url:/src/icons/action/active.png";
-// import inactiveIconPath from "url:/src/icons/action/inactive.png";
-const cssFile = "/css/style.css";
-const activeIconPath = "/icons/action/active.png";
-const inactiveIconPath = "/icons/action/inactive.png";
+import cssFile from "url:/src/css/style.css";
+import activeIconPath from "url:/src/icons/action/active.png";
+import inactiveIconPath from "url:/src/icons/action/inactive.png";
 
 const activeProperties = {
   true: {
