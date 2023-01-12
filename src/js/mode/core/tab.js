@@ -1,17 +1,18 @@
-import cssFile from "url:/src/css/style.css";
-import activeIconPath from "url:/src/icons/action/active.png";
-import inactiveIconPath from "url:/src/icons/action/inactive.png";
+const cssFile = "style.css";
+import cssURL from `url:/src/css/${cssFile}`;
+import activeIconURL from "url:/src/icons/action/active.png";
+import inactiveIconURL from "url:/src/icons/action/inactive.png";
 
 const activeProperties = {
   true: {
     changeCSS: "insertCSS",
-    iconPath: activeIconPath,
+    iconURL: activeIconURL,
     iconTitle: "Invertus (active)",
     persistedBadgeText: " ",
   },
   false: {
     changeCSS: "removeCSS",
-    iconPath: inactiveIconPath,
+    iconURL: inactiveIconURL,
     iconTitle: "Invertus (inactive)",
     persistedBadgeText: "",
   },
@@ -48,15 +49,13 @@ export const update =
     // To not double-insert the CSS.
     if (active !== previousActive) {
       chrome.scripting[properties.changeCSS]({
-        // Hack because I can't figure out how to just refer to the file
-        // adequately.
-        files: [cssFile.match(/style\..*\.css/)[0]],
+        files: [getCSSPath()],
         origin: chrome.scripting.StyleOrigin.USER,
         target: { tabId },
       });
     }
 
-    const path = properties.iconPath;
+    const path = properties.iconURL;
     chrome.action.setIcon({ tabId, path });
 
     const title = properties.iconTitle;
@@ -80,3 +79,9 @@ const hostnameMatchPattern =
   (hostname) => {
     return `*://${hostname}/*`;
   };
+
+// Hack because I can't figure out how to just refer to the file adequately.
+const getCSSPath = () => {
+  let re = new RegExp(cssFile.replace(".", "\\..*\\."));
+  return cssURL.match(re)[0]; 
+};
