@@ -1,0 +1,26 @@
+{
+  "name": "invertus",
+  "version": "0.1.0",
+  "description": "Simple, sticky, keyboard-driven webpage color inversion.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nihil2501/invertus.git"
+  },
+  "author": "Oren Mittman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nihil2501/invertus/issues"
+  },
+  "homepage": "https://github.com/nihil2501/invertus",
+  "scripts": {
+    "build": "parcel build src/manifest.json",
+    "start": "parcel watch src/manifest.json --host localhost"
+  },
+  "devDependencies": {
+    "@parcel/config-webextension": "^2.8.2",
+    "@types/chrome": "^0.0.208",
+    "parcel": "^2.8.2",
+    "parcel-reporter-clean-dist": "^1.0.4",
+    "typescript": "^4.9.4"
+  }
+}

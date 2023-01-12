@@ -1,40 +1,36 @@
-const cssFile = "css/style.css";
+import cssFile from "url:/src/css/style.css";
+import activeIconPath from "url:/src/icons/action/active.png";
+import inactiveIconPath from "url:/src/icons/action/inactive.png";
+
 const activeProperties = {
   true: {
     changeCSS: "insertCSS",
-    iconPath: "/icons/action/active.png",
+    iconPath: activeIconPath,
     iconTitle: "Invertus (active)",
     persistedBadgeText: " ",
   },
   false: {
     changeCSS: "removeCSS",
-    iconPath: "/icons/action/inactive.png",
+    iconPath: inactiveIconPath,
     iconTitle: "Invertus (inactive)",
     persistedBadgeText: "",
   },
 };
 
-export const toggleAll =
-  async ({ hostname, tabId, persisted}) => {
-    return await toggling({ tabId }, (active) => {
-      updateAll({
-        hostname,
-        active,
-        persisted
-      });
-    });
-  }
-
 export const updateAll =
-  async ({ hostname, active, persisted }) => {
+  async ({ hostname, active, tabId, persisted }) => {
     // This may not be strictly accurate for difference between `host` and
     // `hostname` which I think is `username:login`.
     const query = { url: hostnameMatchPattern(hostname) };
     const tabs = await chrome.tabs.query(query);
 
-    for (const { id: tabId } of tabs) {
+    if (active == undefined) {
+      active = await getActive({ tabId });
+    }
+
+    for (const tab of tabs) {
       update({
-        tabId,
+        tabId: tab.id,
         active,
         persisted
       });
@@ -43,24 +39,17 @@ export const updateAll =
     return active;
   };
 
-export const toggle =
-  async ({ tabId, persisted }) => {
-    return await toggling({ tabId }, (active) => {
-      update({
-        tabId,
-        active,
-        persisted
-      });
-    });
-  }
-
 // Need better conceptualization of the `persisted` stuff.
 export const update =
   async ({ tabId, active, persisted }) => {
-    const properties = activeProperties[active];
-
     // To not over-insert the CSS.
     const previousActive = await getActive({ tabId });
+    if (active === undefined) {
+      active = !previousActive;
+    }
+
+    const properties = activeProperties[active];
+
     if (active !== previousActive) {
       chrome.scripting[properties.changeCSS]({
         origin: chrome.scripting.StyleOrigin.USER,
@@ -82,13 +71,6 @@ export const update =
 
     return active;
   };
-
-const toggling =
-  async (details, callback) => {
-    const active = !await getActive(details);
-    callback(active);
-    return active;
-  }
 
 const getActive =
   async (details) => {

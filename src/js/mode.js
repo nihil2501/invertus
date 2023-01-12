@@ -140,9 +140,11 @@ export default
           );
 
         if (granted) {
-          // listener(...args);
-          chrome.tabs.reload(); // would want to `update true`. probably need to
-          // specify the behavior on the promoting listener.
+          // Would want to `update true`. Probably need to specify the behavior
+          // on the promoting listener.
+          // chrome.tabs.reload();
+
+          listener(...args);
         }
       };    
     }

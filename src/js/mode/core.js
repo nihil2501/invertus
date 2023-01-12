@@ -18,10 +18,10 @@ export const fullUpdate =
     switch (fullUpdateUX) {
       case FullUpdateUX.TOGGLE_TAB:
         active =
-          Tab.toggleAll({
+          Tab.updateAll({
             persisted: true,
-            tabId,
             hostname,    
+            tabId,
           });
 
         Storage.update({
@@ -45,7 +45,7 @@ export const fullUpdate =
 
 export const simpleUpdate =
   async ({ tabId }) => {
-    Tab.toggle({
+    Tab.update({
       persisted: false,
       tabId,
     });
