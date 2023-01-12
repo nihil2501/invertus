@@ -6,13 +6,13 @@
   "version": "0.1",
   "action": {
     "default_title": "Invertus (inactive)",
-    "default_icon": "/src/icons/action/inactive.png"
+    "default_icon": "icons/action/inactive.png"
   },
   "icons": {
-    "16": "/src/icons/16.png",
-    "32": "/src/icons/32.png",
-    "48": "/src/icons/48.png",
-    "128": "/src/icons/128.png"
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
   },
   "background": {
     "service_worker": "js/service_worker.js",
