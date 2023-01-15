@@ -1,6 +1,8 @@
-import { whenHostnameValid } from "./helpers.js";
-import { simpleUpdate as update } from "./core.js";
 import Mode from "../mode.js";
+import {
+  simpleUpdate as update,
+  whenHostnameValid,
+} from "../core.js";
 
 export default new Mode({
   requiredPermissions: {

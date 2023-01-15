@@ -1,5 +1,5 @@
 const cssFile = "style.css";
-import cssURL from `url:/src/css/${cssFile}`;
+import cssURL from "url:/src/css/style.css";
 import activeIconURL from "url:/src/icons/action/active.png";
 import inactiveIconURL from "url:/src/icons/action/inactive.png";
 
