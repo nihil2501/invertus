@@ -1,6 +1,5 @@
 /* sometimes inverted images good, sometimes bad. */
-/* :root, img, image { */
-:root {
+:root, img, image {
   filter: invert(96%) hue-rotate(180deg) !important;
 }
 
