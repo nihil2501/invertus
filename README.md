@@ -17,3 +17,7 @@
   * should just reload page (but i don't really see a nice spot in the code for the idea)
   * or rather just update with true. again don't see where to put the code for the idea.
   * remodel incoming: associating more deeply; promoting behavior, permissions per behavior
+* something for evaluating persisteds? probably just LRU thing is nicest :)
+* test suite
+* typescript
+* tests
