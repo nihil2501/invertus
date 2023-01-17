@@ -1,7 +1,8 @@
 {
+  "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
-    "module": "es6"
-  },
-  "extends": "@tsconfig/strictest/tsconfig.json"
+    "module": "es6",
+    "typeRoots": ["./src/js/types"]
+  }
 }
