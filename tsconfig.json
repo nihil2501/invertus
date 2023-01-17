@@ -2,5 +2,6 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "es6"
-  }
+  },
+  "extends": "@tsconfig/strictest/tsconfig.json"
 }

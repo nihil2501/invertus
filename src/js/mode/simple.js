@@ -1,4 +1,4 @@
-import Mode from "../mode.js";
+import Mode from "../mode.ts";
 import { simpleUpdate as update } from "../core.js";
 import { whenHostnameValid } from "../core/helpers.js";
 

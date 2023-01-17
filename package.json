@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@parcel/config-webextension": "^2.8.2",
+    "@tsconfig/strictest": "^1.0.2",
     "@types/chrome": "^0.0.208",
     "parcel": "^2.8.2",
     "parcel-reporter-clean-dist": "^1.0.4",
