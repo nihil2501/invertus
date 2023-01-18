@@ -1,8 +1,9 @@
 {
+  "include": ["src/js/**/*.ts"],
   "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
     "module": "es6",
-    "typeRoots": ["./src/js/types"]
+    "typeRoots": ["src/js/types"]
   }
 }

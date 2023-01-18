@@ -14,7 +14,8 @@
   "homepage": "https://github.com/nihil2501/invertus",
   "scripts": {
     "build": "parcel build src/manifest.json",
-    "start": "parcel watch src/manifest.json --host localhost"
+    "start": "parcel watch src/manifest.json --host localhost",
+    "code": "tsc --noEmit && eslint 'src/js/**/*.ts' --quiet --fix"
   },
   "devDependencies": {
     "@parcel/config-webextension": "^2.8.2",

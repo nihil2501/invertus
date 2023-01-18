@@ -22,3 +22,4 @@
 * typescript
 * tests - playwright?
 * no type checking in parcel by default? maybe want a ci setup that does that (and run tests) https://parceljs.org/languages/typescript/#type-checking
+* add prettier or something like this for auto code formatting
