@@ -1,6 +1,6 @@
-import Mode from "../mode.ts";
-import { simpleUpdate as update } from "../core.js";
-import { whenHostnameValid } from "../core/helpers.js";
+import Mode from "../mode";
+import { simpleUpdate as update } from "../core";
+import { whenHostnameValid } from "../core/helpers";
 
 export default new Mode({
   requiredPermissions: {
@@ -21,10 +21,10 @@ export default new Mode({
 });
 
 const onActionClickedListener =
-  ({ url, id: tabId }) => {
+  ({ url, id }: chrome.tabs.Tab): void => {
     console.debug("simple.onActionClickedListener");
 
-    whenHostnameValid(url, () => {
-      update({ tabId });
+    whenHostnameValid(url!, () => {
+      update({ tabId: id! });
     });
   };

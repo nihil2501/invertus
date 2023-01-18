@@ -1,6 +1,6 @@
-import Mode from "./mode/full.js";
+import Mode from "./mode/full";
 
-const reconcileMode = async (_permissions, initial) => {
+const reconcileMode = async (_permissions: chrome.permissions.Permissions, initial = false) => {
   const permissions = await chrome.permissions.getAll();
   Mode.reconcile(permissions, initial);
 };

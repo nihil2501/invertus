@@ -51,7 +51,10 @@ export default class Mode {
   }
 
   // TODO: remove `initial` hack by more accurately modeling `Mode`.
-  reconcile(permissions: chrome.permissions.Permissions, initial: boolean): boolean {
+  reconcile(
+    permissions: chrome.permissions.Permissions,
+    initial: boolean
+  ): boolean {
     console.debug("reconciling permissions", permissions);
 
     const promotingModePermitted = this.#reconcilePromotingMode(permissions, initial);
@@ -66,7 +69,10 @@ export default class Mode {
     return permitted;
   }
 
-  #reconcilePromotingMode(permissions: chrome.permissions.Permissions, initial: boolean): boolean {
+  #reconcilePromotingMode(
+    permissions: chrome.permissions.Permissions,
+    initial: boolean
+  ): boolean {
     return !this.promotingMode ||
       this.promotingMode.mode.reconcile(
         permissions,
@@ -84,12 +90,21 @@ export default class Mode {
 
 
     return (
-      typePermittedBy(this.requiredPermissions.origins, permissions.origins) &&
-        typePermittedBy(this.requiredPermissions.permissions, permissions.permissions)
+      typePermittedBy(
+        this.requiredPermissions.origins,
+        permissions.origins
+      ) &&
+      typePermittedBy(
+        this.requiredPermissions.permissions,
+        permissions.permissions
+      )
     );
   }
 
-  #expressMobility({ promoting, initial }: { promoting: boolean, initial: boolean }): void {
+  #expressMobility({ promoting, initial }: {
+    promoting: boolean,
+    initial: boolean
+  }): void {
     // I think there will be some bug here, probably easy enough to rediscover.
     // Evidently why `initial` was passed.
     console.debug(initial);

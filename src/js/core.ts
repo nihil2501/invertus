@@ -1,9 +1,9 @@
-import * as Tab from "./core/tab.js";
-import * as Storage from "./core/storage.js";
+import * as Tab from "./core/tab";
+import * as Storage from "./core/storage";
 
 export const fullUpdate =
-  async ({ hostname }) => {
-    active = await Storage.toggle(hostname);
+  async ({ hostname }: { hostname: string }): Promise<void> => {
+    const active = await Storage.toggle(hostname);
 
     Tab.updateAll({
       persisted: true,
@@ -13,7 +13,7 @@ export const fullUpdate =
   };
 
 export const simpleUpdate =
-  async ({ tabId }) => {
+  async ({ tabId }: { tabId: number }): Promise<void> => {
     Tab.update({
       persisted: false,
       tabId,
@@ -21,7 +21,10 @@ export const simpleUpdate =
   };
 
 export const restore =
-  async ({ hostname, tabId }) => {
+  async ({ hostname, tabId }: {
+    hostname: string,
+    tabId: number
+  }): Promise<void> => {
     const active = await Storage.fetch(hostname);
 
     if (active) {

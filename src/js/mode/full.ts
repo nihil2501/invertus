@@ -1,7 +1,7 @@
-import Mode from "../mode.ts";
-import SimpleMode from "./simple.js";
-import { restore, fullUpdate as update } from "../core.js";
-import { whenHostnameValid } from "../core/helpers.js";
+import Mode from "../mode";
+import SimpleMode from "./simple";
+import { restore, fullUpdate as update } from "../core";
+import { whenHostnameValid } from "../core/helpers";
 
 export default new Mode({
   requiredPermissions: {
@@ -35,7 +35,7 @@ export default new Mode({
 });
 
 const onNavigationCommittedListener =
-  ({ url, tabId, frameId }) => {
+  ({ url, tabId, frameId }: chrome.webNavigation.WebNavigationTransitionCallbackDetails): void => {
     // Is this the most relevant way to discriminate? Is it always and only an
     // outer frame navigation and ensuing CSS insertion that has the desired
     // result?
@@ -51,8 +51,8 @@ const onNavigationCommittedListener =
 
 const onCommandListener =
   // There is only one command declared for the extension: `full-update`
-  (_command, { url }) => {
-    whenHostnameValid(url, (hostname) => {
+  (_command: string, { url }: chrome.tabs.Tab): void => {
+    whenHostnameValid(url!, (hostname) => {
       console.debug("full.onCommandListener");
       update({ hostname });
     });

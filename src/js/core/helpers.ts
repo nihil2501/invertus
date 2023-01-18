@@ -5,10 +5,10 @@ const urlInvalidRules = [
 ];
 
 export const whenHostnameValid =
-  (url, callback) => {
-    url = new URL(url);
+  (rawURL: string, callback: (hostname: string) => void) => {
+    const url = new URL(rawURL);
     for (const rule of urlInvalidRules) {
-      if (url[rule.property] === rule.value) {
+      if (url[rule.property as keyof URL] === rule.value) {
         return;
       }
     }
