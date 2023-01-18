@@ -12,3 +12,8 @@ declare namespace chrome.permissions {
    */
   export function getAll(): Promise<Permissions>;
 }
+
+// https://github.com/parcel-bundler/parcel/discussions/5194
+declare module 'url:*' {
+  export default string;
+}

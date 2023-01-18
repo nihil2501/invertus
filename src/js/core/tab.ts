@@ -37,7 +37,7 @@ export const update =
     // To not double-insert the CSS.
     if (active !== previousActive) {
       properties.changeCSS({
-        files: [cssPath],
+        files: [getCSSPath()],
         origin: "USER",
         target: { tabId },
       });
@@ -68,9 +68,16 @@ const hostnameMatchPattern =
     return `*://${hostname}/*`;
   };
 
-const cssPath = "/src/css/style.css";
-const activeIconPath = "/src/icons/action/active.png";
-const inactiveIconPath = "/src/icons/action/inactive.png";
+const cssFile = "style.css";
+import cssURL from "url:/src/css/style.css";
+import activeIconURL from "url:/src/icons/action/active.png";
+import inactiveIconURL from "url:/src/icons/action/inactive.png";
+
+// Hack because I can't figure out how to just refer to the file adequately.
+const getCSSPath = (): string => {
+  let re = new RegExp(cssFile.replace(".", "\\..*\\."));
+  return (cssURL as string).match(re)![0];
+};
 
 type ChangeCSS = (
   typeof chrome.scripting.insertCSS |
@@ -89,14 +96,14 @@ const getActiveProperties =
     if (active) {
       return {
         changeCSS: chrome.scripting.insertCSS,
-        iconURL: activeIconPath,
+        iconURL: activeIconURL,
         iconTitle: "Invertus (active)",
         persistedBadgeText: " ",
       };
     } else {
       return {
         changeCSS: chrome.scripting.removeCSS,
-        iconURL: inactiveIconPath,
+        iconURL: inactiveIconURL,
         iconTitle: "Invertus (inactive)",
         persistedBadgeText: "",
       };
