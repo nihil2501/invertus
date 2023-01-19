@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "airbnb-base",
+    "airbnb-typescript/base"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/no-use-before-define": "off",
+    "arrow-body-style": "off",
+    "operator-linebreak": "off"
+  }
+}

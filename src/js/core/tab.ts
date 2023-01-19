@@ -1,3 +1,9 @@
+import cssURL from 'url:/src/css/style.css';
+import activeIconURL from 'url:/src/icons/action/active.png';
+import inactiveIconURL from 'url:/src/icons/action/inactive.png';
+
+const cssFile = 'style.css';
+
 export const updateAll =
   async ({ hostname, active, persisted }: {
     hostname: string,
@@ -9,13 +15,13 @@ export const updateAll =
     const query = { url: hostnameMatchPattern(hostname) };
     const tabs = await chrome.tabs.query(query);
 
-    for (const tab of tabs) {
+    tabs.forEach((tab) => {
       update({
         tabId: tab.id!,
         active,
-        persisted
+        persisted,
       });
-    }
+    });
 
     return active;
   };
@@ -27,18 +33,19 @@ export const update =
     active?: boolean,
     persisted: boolean
   }): Promise<boolean> => {
+    let nextActive = active;
     const previousActive = await getActive({ tabId });
-    if (active === undefined) {
-      active = !previousActive;
+    if (nextActive === undefined) {
+      nextActive = !previousActive;
     }
 
-    const properties = getActiveProperties(active);
+    const properties = getActiveProperties(nextActive);
 
     // To not double-insert the CSS.
-    if (active !== previousActive) {
+    if (nextActive !== previousActive) {
       properties.changeCSS({
         files: [getCSSPath()],
-        origin: "USER",
+        origin: 'USER',
         target: { tabId },
       });
     }
@@ -54,7 +61,7 @@ export const update =
       chrome.action.setBadgeText({ tabId, text });
     }
 
-    return active;
+    return nextActive;
   };
 
 const getActive =
@@ -68,14 +75,9 @@ const hostnameMatchPattern =
     return `*://${hostname}/*`;
   };
 
-const cssFile = "style.css";
-import cssURL from "url:/src/css/style.css";
-import activeIconURL from "url:/src/icons/action/active.png";
-import inactiveIconURL from "url:/src/icons/action/inactive.png";
-
 // Hack because I can't figure out how to just refer to the file adequately.
 const getCSSPath = (): string => {
-  let re = new RegExp(cssFile.replace(".", "\\..*\\."));
+  const re = new RegExp(cssFile.replace('.', '\\..*\\.'));
   return (cssURL as string).match(re)![0];
 };
 
@@ -89,7 +91,7 @@ type TabConfiguration = {
   iconURL: string,
   iconTitle: string,
   persistedBadgeText: string,
-}
+};
 
 const getActiveProperties =
   (active: boolean): TabConfiguration => {
@@ -97,15 +99,15 @@ const getActiveProperties =
       return {
         changeCSS: chrome.scripting.insertCSS,
         iconURL: activeIconURL,
-        iconTitle: "Invertus (active)",
-        persistedBadgeText: " ",
-      };
-    } else {
-      return {
-        changeCSS: chrome.scripting.removeCSS,
-        iconURL: inactiveIconURL,
-        iconTitle: "Invertus (inactive)",
-        persistedBadgeText: "",
+        iconTitle: 'Invertus (active)',
+        persistedBadgeText: ' ',
       };
     }
+
+    return {
+      changeCSS: chrome.scripting.removeCSS,
+      iconURL: inactiveIconURL,
+      iconTitle: 'Invertus (inactive)',
+      persistedBadgeText: '',
+    };
   };

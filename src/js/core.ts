@@ -1,5 +1,5 @@
-import * as Tab from "./core/tab";
-import * as Storage from "./core/storage";
+import * as Tab from './core/tab';
+import * as Storage from './core/storage';
 
 export const fullUpdate =
   async ({ hostname }: { hostname: string }): Promise<void> => {
