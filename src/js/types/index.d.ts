@@ -18,6 +18,6 @@ declare namespace chrome.permissions {
 }
 
 // https://github.com/parcel-bundler/parcel/discussions/5194
-declare module 'url:*' {
+declare module "url:*" {
   export default string;
 }

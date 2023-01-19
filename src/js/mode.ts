@@ -55,22 +55,21 @@ export default class Mode {
   reconcile(
     permissions: chrome.permissions.Permissions,
     // TODO: remove `initial` hack by more accurately modeling `Mode`.
-    initial: boolean,
+    initial: boolean
   ) {
-    console.debug('reconciling permissions', permissions);
+    console.debug("reconciling permissions", permissions);
 
-    const promotingModePermitted =
-      this.#reconcilePromotingMode(
-        permissions,
-        initial,
-      );
+    const promotingModePermitted = this.#reconcilePromotingMode(
+      permissions,
+      initial
+    );
 
     if (!promotingModePermitted) {
       return false;
     }
 
     const permitted = this.#permittedBy(permissions);
-    console.debug('permitted', permitted);
+    console.debug("permitted", permitted);
 
     this.#expressMobility({ promoting: !permitted, initial });
     return permitted;
@@ -78,46 +77,45 @@ export default class Mode {
 
   #reconcilePromotingMode(
     permissions: chrome.permissions.Permissions,
-    initial: boolean,
+    initial: boolean
   ) {
-    return !this.promotingMode
-      || this.promotingMode.mode.reconcile(
-        permissions,
-        initial,
-      );
+    return (
+      !this.promotingMode ||
+      this.promotingMode.mode.reconcile(permissions, initial)
+    );
   }
 
   #permittedBy(permissions: chrome.permissions.Permissions) {
     return (
       Mode.typePermittedBy(
         this.requiredPermissions.origins,
-        permissions.origins,
+        permissions.origins
       ) &&
-
       Mode.typePermittedBy(
         this.requiredPermissions.permissions,
-        permissions.permissions,
+        permissions.permissions
       )
     );
   }
 
-  #expressMobility({ promoting, initial }: {
-    promoting: boolean,
-    initial: boolean
+  #expressMobility({
+    promoting,
+    initial,
+  }: {
+    promoting: boolean;
+    initial: boolean;
   }) {
     // I think there will be some bug here, probably easy enough to rediscover.
     // Evidently why `initial` was passed.
     console.debug(initial);
 
-    Mode.replaceEventListeners(
-      this.#getAllEventListeners(),
-      { withNothing: promoting },
-    );
+    Mode.replaceEventListeners(this.#getAllEventListeners(), {
+      withNothing: promoting,
+    });
 
-    Mode.replaceEventListeners(
-      this.#getPromotingEventListeners(),
-      { withNothing: !promoting },
-    );
+    Mode.replaceEventListeners(this.#getPromotingEventListeners(), {
+      withNothing: !promoting,
+    });
   }
 
   #getAllEventListeners() {
@@ -125,9 +123,7 @@ export default class Mode {
       this.allEventListeners = this.getEventListeners();
 
       if (this.promotingMode) {
-        this.allEventListeners.push(
-          ...this.promotingMode.getEventListeners(),
-        );
+        this.allEventListeners.push(...this.promotingMode.getEventListeners());
       }
     }
 
@@ -157,10 +153,10 @@ export default class Mode {
 
   #wrapPromotingListener(listener: Function) {
     return async (...args: any[]) => {
-      console.debug('requesting permissions', this.requiredPermissions);
+      console.debug("requesting permissions", this.requiredPermissions);
 
       const granted = await chrome.permissions.request(
-        this.requiredPermissions,
+        this.requiredPermissions
       );
 
       if (granted) {
@@ -176,22 +172,22 @@ export default class Mode {
 
   static replaceEventListeners<T extends Function>(
     eventListeners: EventListener<T>[],
-    { withNothing }: { withNothing: boolean },
+    { withNothing }: { withNothing: boolean }
   ) {
     eventListeners.forEach(({ event, listener }) => {
-      console.debug('remove listener', listener);
+      console.debug("remove listener", listener);
       event.removeListener(listener);
 
       if (!withNothing) {
-        console.debug('add listener', listener);
+        console.debug("add listener", listener);
         event.addListener(listener);
       }
     });
-  };
+  }
 
   static typePermittedBy(required: string[] = [], provided: string[] = []) {
     return required.every((permission: string) => {
       return provided.includes(permission);
     });
-  };
+  }
 }

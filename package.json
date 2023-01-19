@@ -15,7 +15,7 @@
   "scripts": {
     "build": "parcel build src/manifest.json",
     "start": "parcel watch src/manifest.json --host localhost",
-    "code": "tsc --noEmit && eslint 'src/js/**/*.ts' --fix"
+    "code": "tsc --noEmit && eslint 'src/js/**/*.ts' --fix && prettier --write 'src/js/**/*.ts'"
   },
   "devDependencies": {
     "@parcel/config-webextension": "^2.8.2",

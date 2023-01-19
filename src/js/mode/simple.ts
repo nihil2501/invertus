@@ -1,14 +1,11 @@
-import Mode from '../mode';
-import { simpleUpdate as update } from '../core';
-import { whenHostnameValid } from '../core/helpers';
+import Mode from "../mode";
+import { simpleUpdate as update } from "../core";
+import { whenHostnameValid } from "../core/helpers";
 
 export default new Mode({
   requiredPermissions: {
     origins: [],
-    permissions: [
-      'scripting',
-      'activeTab',
-    ],
+    permissions: ["scripting", "activeTab"],
   },
   getEventListeners: () => {
     return [
@@ -20,11 +17,10 @@ export default new Mode({
   },
 });
 
-const onActionClickedListener =
-  ({ url, id }: chrome.tabs.Tab): void => {
-    console.debug('simple.onActionClickedListener');
+const onActionClickedListener = ({ url, id }: chrome.tabs.Tab): void => {
+  console.debug("simple.onActionClickedListener");
 
-    whenHostnameValid(url!, () => {
-      update({ tabId: id! });
-    });
-  };
+  whenHostnameValid(url!, () => {
+    update({ tabId: id! });
+  });
+};

@@ -1,17 +1,12 @@
-import Mode from '../mode';
-import SimpleMode from './simple';
-import { restore, fullUpdate as update } from '../core';
-import { whenHostnameValid } from '../core/helpers';
+import Mode from "../mode";
+import SimpleMode from "./simple";
+import { restore, fullUpdate as update } from "../core";
+import { whenHostnameValid } from "../core/helpers";
 
 export default new Mode({
   requiredPermissions: {
-    origins: [
-      '*://*/*',
-    ],
-    permissions: [
-      'storage',
-      'webNavigation',
-    ],
+    origins: ["*://*/*"],
+    permissions: ["storage", "webNavigation"],
   },
   getEventListeners: () => {
     return [
@@ -34,28 +29,32 @@ export default new Mode({
   },
 });
 
-type NavigationDetails = chrome.webNavigation.WebNavigationTransitionCallbackDetails;
+type NavigationDetails =
+  chrome.webNavigation.WebNavigationTransitionCallbackDetails;
 
-const onNavigationCommittedListener =
-  ({ url, tabId, frameId }: NavigationDetails): void => {
-    // Is this the most relevant way to discriminate? Is it always and only an
-    // outer frame navigation and ensuing CSS insertion that has the desired
-    // result?
-    if (frameId !== 0) {
-      return;
-    }
+const onNavigationCommittedListener = ({
+  url,
+  tabId,
+  frameId,
+}: NavigationDetails): void => {
+  // Is this the most relevant way to discriminate? Is it always and only an
+  // outer frame navigation and ensuing CSS insertion that has the desired
+  // result?
+  if (frameId !== 0) {
+    return;
+  }
 
-    whenHostnameValid(url, (hostname) => {
-      console.debug('full.onNavigationCommittedListener');
-      restore({ hostname, tabId });
-    });
-  };
+  whenHostnameValid(url, (hostname) => {
+    console.debug("full.onNavigationCommittedListener");
+    restore({ hostname, tabId });
+  });
+};
 
 const onCommandListener =
   // There is only one command declared for the extension: `full-update`
   (_command: string, { url }: chrome.tabs.Tab): void => {
     whenHostnameValid(url!, (hostname) => {
-      console.debug('full.onCommandListener');
+      console.debug("full.onCommandListener");
       update({ hostname });
     });
   };
