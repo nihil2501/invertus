@@ -54,7 +54,9 @@ export default class Mode {
 
   reconcile(
     permissions: chrome.permissions.Permissions,
-    // TODO: remove `initial` hack by more accurately modeling `Mode`.
+    // TODO: remove `initial` hack by more accurately modeling `Mode`. We'd want
+    // to tie specific permissions to specific behaviors requiring them. For
+    // now we can not be that accurate.
     initial: boolean
   ) {
     console.debug("reconciling permissions", permissions);
@@ -106,8 +108,9 @@ export default class Mode {
     initial: boolean;
   }) {
     // TODO: remove this after tighter modeling. Right now it just avoids
-    // invoking unpermitted APIs. The only such things are during initial setup
-    // for the full-mode feature set.
+    // invoking unpermitted APIs. And the only such things are during initial
+    // setup for the full-mode feature set. (Namely web nav oncommitted before
+    // granting web nav).
     if (!(initial && promoting)) {
       Mode.replaceEventListeners(this.#getAllEventListeners(), {
         withNothing: promoting,
@@ -161,11 +164,8 @@ export default class Mode {
       );
 
       if (granted) {
-        // TODO: what were we thinking about here?
-        // Would want to `update true`. Probably need to specify the behavior
-        // on the promoting listener.
-        // chrome.tabs.reload();
-
+        // Probably acceptable edge case where we re-promote on persisted will
+        // appear to 'silently' unpersist.
         listener(...args);
       }
     };
