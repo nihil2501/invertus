@@ -9,7 +9,7 @@ export const updateAll =
     hostname: string,
     active: boolean,
     persisted: boolean
-  }): Promise<boolean> => {
+  }) => {
     // This may not be strictly accurate for difference between `host` and
     // `hostname` which I think is `username:login`.
     const query = { url: hostnameMatchPattern(hostname) };
@@ -32,7 +32,7 @@ export const update =
     tabId: number,
     active?: boolean,
     persisted: boolean
-  }): Promise<boolean> => {
+  }) => {
     let nextActive = active;
     const previousActive = await getActive({ tabId });
     if (nextActive === undefined) {
@@ -65,36 +65,24 @@ export const update =
   };
 
 const getActive =
-  async (details: { tabId: number }): Promise<boolean> => {
+  async (details: { tabId: number }) => {
     const title = await chrome.action.getTitle(details);
     return title === getActiveProperties(true).iconTitle;
   };
 
 const hostnameMatchPattern =
-  (hostname: string): string => {
+  (hostname: string) => {
     return `*://${hostname}/*`;
   };
 
 // Hack because I can't figure out how to just refer to the file adequately.
-const getCSSPath = (): string => {
+const getCSSPath = () => {
   const re = new RegExp(cssFile.replace('.', '\\..*\\.'));
   return (cssURL as string).match(re)![0];
 };
 
-type ChangeCSS = (
-  typeof chrome.scripting.insertCSS |
-  typeof chrome.scripting.removeCSS
-);
-
-type TabConfiguration = {
-  changeCSS: ChangeCSS,
-  iconURL: string,
-  iconTitle: string,
-  persistedBadgeText: string,
-};
-
 const getActiveProperties =
-  (active: boolean): TabConfiguration => {
+  (active: boolean) => {
     if (active) {
       return {
         changeCSS: chrome.scripting.insertCSS,

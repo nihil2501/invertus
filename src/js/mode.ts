@@ -52,11 +52,11 @@ export default class Mode {
     Object.assign(this, configuration);
   }
 
-  // TODO: remove `initial` hack by more accurately modeling `Mode`.
   reconcile(
     permissions: chrome.permissions.Permissions,
+    // TODO: remove `initial` hack by more accurately modeling `Mode`.
     initial: boolean,
-  ): boolean {
+  ) {
     console.debug('reconciling permissions', permissions);
 
     const promotingModePermitted =
@@ -79,7 +79,7 @@ export default class Mode {
   #reconcilePromotingMode(
     permissions: chrome.permissions.Permissions,
     initial: boolean,
-  ): boolean {
+  ) {
     return !this.promotingMode
       || this.promotingMode.mode.reconcile(
         permissions,
@@ -87,14 +87,14 @@ export default class Mode {
       );
   }
 
-  #permittedBy(permissions: chrome.permissions.Permissions): boolean {
+  #permittedBy(permissions: chrome.permissions.Permissions) {
     return (
-      typePermittedBy(
+      Mode.typePermittedBy(
         this.requiredPermissions.origins,
         permissions.origins,
       ) &&
 
-      typePermittedBy(
+      Mode.typePermittedBy(
         this.requiredPermissions.permissions,
         permissions.permissions,
       )
@@ -104,23 +104,23 @@ export default class Mode {
   #expressMobility({ promoting, initial }: {
     promoting: boolean,
     initial: boolean
-  }): void {
+  }) {
     // I think there will be some bug here, probably easy enough to rediscover.
     // Evidently why `initial` was passed.
     console.debug(initial);
 
-    replaceEventListeners(
+    Mode.replaceEventListeners(
       this.#getAllEventListeners(),
       { withNothing: promoting },
     );
 
-    replaceEventListeners(
+    Mode.replaceEventListeners(
       this.#getPromotingEventListeners(),
       { withNothing: !promoting },
     );
   }
 
-  #getAllEventListeners(): EventListener<Function>[] {
+  #getAllEventListeners() {
     if (!this.allEventListeners) {
       this.allEventListeners = this.getEventListeners();
 
@@ -134,7 +134,7 @@ export default class Mode {
     return this.allEventListeners;
   }
 
-  #getPromotingEventListeners(): EventListener<Function>[] {
+  #getPromotingEventListeners() {
     if (!this.promotingEventListeners) {
       this.promotingEventListeners = [];
 
@@ -155,7 +155,7 @@ export default class Mode {
     return this.promotingEventListeners;
   }
 
-  #wrapPromotingListener(listener: Function): Function {
+  #wrapPromotingListener(listener: Function) {
     return async (...args: any[]) => {
       console.debug('requesting permissions', this.requiredPermissions);
 
@@ -173,26 +173,25 @@ export default class Mode {
       }
     };
   }
-}
 
-const replaceEventListeners = <T extends Function>(
-  eventListeners: EventListener<T>[],
-  { withNothing }: { withNothing: boolean },
-): void => {
-  eventListeners.forEach(({ event, listener }) => {
-    console.debug('remove listener', listener);
-    event.removeListener(listener);
+  static replaceEventListeners<T extends Function>(
+    eventListeners: EventListener<T>[],
+    { withNothing }: { withNothing: boolean },
+  ) {
+    eventListeners.forEach(({ event, listener }) => {
+      console.debug('remove listener', listener);
+      event.removeListener(listener);
 
-    if (!withNothing) {
-      console.debug('add listener', listener);
-      event.addListener(listener);
-    }
-  });
-};
+      if (!withNothing) {
+        console.debug('add listener', listener);
+        event.addListener(listener);
+      }
+    });
+  };
 
-const typePermittedBy =
-  (required: string[] = [], provided: string[] = []) => {
+  static typePermittedBy(required: string[] = [], provided: string[] = []) {
     return required.every((permission: string) => {
       return provided.includes(permission);
     });
   };
+}
