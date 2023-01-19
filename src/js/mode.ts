@@ -105,13 +105,14 @@ export default class Mode {
     promoting: boolean;
     initial: boolean;
   }) {
-    // I think there will be some bug here, probably easy enough to rediscover.
-    // Evidently why `initial` was passed.
-    console.debug(initial);
-
-    Mode.replaceEventListeners(this.#getAllEventListeners(), {
-      withNothing: promoting,
-    });
+    // TODO: remove this after tighter modeling. Right now it just avoids
+    // invoking unpermitted APIs. The only such things are during initial setup
+    // for the full-mode feature set.
+    if (!(initial && promoting)) {
+      Mode.replaceEventListeners(this.#getAllEventListeners(), {
+        withNothing: promoting,
+      });
+    }
 
     Mode.replaceEventListeners(this.#getPromotingEventListeners(), {
       withNothing: !promoting,
