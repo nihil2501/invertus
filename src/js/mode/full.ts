@@ -5,8 +5,8 @@ import { whenHostnameValid } from "../core/helpers";
 
 export default new Mode({
   requiredPermissions: {
-    origins: ["*://*/*"],
     permissions: ["storage", "webNavigation"],
+    origins: ["*://*/*"],
   },
   getEventListeners: () => {
     return [

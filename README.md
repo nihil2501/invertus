@@ -16,6 +16,8 @@
   * remodel: associating more deeply; promoting behavior, permissions per behavior
 * something for evaluating persisteds? probably just LRU thing is nicest :)
 * no type checking in parcel by default? maybe want a ci setup that does that (and run tests) https://parceljs.org/languages/typescript/#type-checking
+* investigate linting difference: ! operator, unhandled promise rejection, Function as type parameter in generics.
+* *remember non-persisted inversions for a bit so that if you revisit some page after not too long (as is common) it'll come back inverted.
 
 * TEST - playwright? puppeteer? https://playwright.dev/docs/chrome-extensions https://pptr.dev/guides/chrome-extensions
 * DEPLOY - gh action -> package & upload to store? e.g. https://circleci.com/blog/continuously-deploy-a-chrome-extension/
