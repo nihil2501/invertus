@@ -15,7 +15,7 @@ importers:
         specifier: ^0.0.280
         version: 0.0.280
       typescript:
-        specifier: ^5.6.3
+        specifier: ^5.8.2
         version: 5.8.2
       wxt:
         specifier: ^0.19.29
