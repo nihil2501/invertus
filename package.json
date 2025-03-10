@@ -1,6 +1,6 @@
 {
-  "name": "invertus",
-  "description": "manifest.json description",
+  "name": "Invertus",
+  "description": "Simple, sticky, keyboard-driven webpage color inversion.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
