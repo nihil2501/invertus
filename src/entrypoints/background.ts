@@ -1,8 +1,8 @@
 export default defineBackground(() => {
-  chrome.action.onClicked.addListener(onActionClickedListener);
-  chrome.commands.onCommand.addListener(onCommandListener);
-  chrome.webNavigation.onCommitted.addListener(onNavigationCommittedListener);
-  storage.watch<string[]>(hostnamesStorageItem.key, onHostnamesChanged);
+  // chrome.action.onClicked.addListener(onActionClickedListener);
+  // chrome.commands.onCommand.addListener(onCommandListener);
+  // chrome.webNavigation.onCommitted.addListener(onNavigationCommittedListener);
+  // storage.watch<string[]>(hostnamesStorageItem.key, onHostnamesChanged);
 });
 
 const onCommandListener = (

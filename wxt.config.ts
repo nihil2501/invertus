@@ -4,8 +4,7 @@ export default defineConfig({
   extensionApi: "chrome",
   srcDir: "src",
   manifest: {
-    permissions: ["scripting", "activeTab", "tabs", "webNavigation", "storage"],
-    host_permissions: ["*://*/*"],
+    permissions: ["scripting", "activeTab", "storage"],
     action: {},
     commands: {
       _execute_action: {
