@@ -5,6 +5,7 @@ export default defineConfig({
   srcDir: "src",
   manifest: {
     permissions: ["scripting", "activeTab", "storage"],
+    optional_host_permissions: ["<all_urls>"],
     action: {},
     commands: {
       _execute_action: {
@@ -14,15 +15,6 @@ export default defineConfig({
           mac: "MacCtrl+I",
         },
       },
-    },
-  },
-  hooks: {
-    "build:manifestGenerated": (_wxt, manifest) => {
-      manifest.content_scripts ??= [];
-      manifest.content_scripts.push({
-        css: ["content-scripts/style.css"],
-        matches: ["*://*/*"],
-      });
     },
   },
 });
