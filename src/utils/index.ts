@@ -1,15 +1,31 @@
-export const whenHostnameValid = (
-  rawUrl: string | undefined,
-  callback: (hostname: string) => Promise<void>,
-) => {
-  if (!rawUrl) return;
-  const url = new URL(rawUrl);
+const EXTENSION_ID = "invertus";
 
-  for (const { value, property } of URL_INVALID_RULES) {
-    if (url[property] === value) return;
+export const CONSTANTS = {
+  MESSAGE: `${EXTENSION_ID}-toggle`,
+  CLASS: EXTENSION_ID,
+
+  STYLE: {
+    ID: `${EXTENSION_ID}-style`,
+    PATH: "content-scripts/style.css",
+  },
+  CONTENT: {
+    ID: `${EXTENSION_ID}-content`,
+    PATH: "content-scripts/content.js",
+  },
+};
+
+export const getValidHostnamePattern = (url = "") => {
+  try {
+    const parsedUrl = new URL(url);
+    for (const { value, property } of URL_INVALID_RULES) {
+      if (parsedUrl[property] === value) return;
+    }
+
+    return `*://${parsedUrl.hostname}/*`;
+  } catch (e) {
+    if (e instanceof TypeError) return;
+    throw e;
   }
-
-  callback(url.hostname);
 };
 
 const URL_INVALID_RULES: Array<{

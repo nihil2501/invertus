@@ -1,11 +1,11 @@
 /* Sometimes inverted images good, sometimes bad. */
-html,
-html img,
-html image {
+html.invertus,
+html.invertus img,
+html.invertus image {
   filter: invert(96%) hue-rotate(180deg) !important;
 }
 
 /* In case there is none already like on Discogs. */
-html body {
+html.invertus body {
   background-color: white;
 }

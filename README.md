@@ -1,3 +1,10 @@
+- `hostnameEnabled`
+- Presence of `.invertus`?
+
+- Want to treat in `storage.sync` as source-of-truth on `host_permissions`
+- But `host_permissions` can be modified elsewise, so we could listen and reconcile into `storage.sync`
+- But is there an infinite loop in that logic?
+
 # Brainstorming
 - `activeTab`
   - Enabling

@@ -1,39 +1,74 @@
 export default defineBackground(() => {
-  browser.action.onClicked.addListener(({ id, url }) => {
-    whenHostnameValid(url, styleHostname);
-    if (id) styleTab(id);
+  browser.action.onClicked.addListener(async ({ id, url }) => {
+    try {
+      // if (id) await activateTab(id);
+
+      const hostnamePattern = getValidHostnamePattern(url);
+      if (!hostnamePattern) return;
+
+      // await activateUrlPattern(hostnamePattern);
+      const tabs = await browser.tabs.query({ url: hostnamePattern });
+
+      for (const tab of tabs) {
+        if (!tab.id) continue;
+
+        // TODO: Add concurrency to this.
+        const activated = (await sendTabMessage(
+          tab.id,
+          CONSTANTS.MESSAGE,
+          activateTab,
+        )) as boolean; // Umm, would we get disagreement for this hostname?
+      }
+    } catch (error) {
+      console.error(error);
+    }
   });
 });
 
-const EXTENSION_ID = "invertus";
-const STYLE_ID = `${EXTENSION_ID}-style`;
-const CSS_PATH = "content-scripts/style.css";
+const activateUrlPattern = async (urlPattern: string) => {
+  const permissions = { origins: [urlPattern] };
+  const granted = await browser.permissions.request(permissions);
+  if (!granted) return;
 
-const styleHostname = async (hostname: string) => {
-  const matchPattern = `*://${hostname}/*`;
+  await browser.scripting.unregisterContentScripts();
+  await browser.scripting.registerContentScripts([
+    {
+      css: [CONSTANTS.STYLE.PATH],
+      id: CONSTANTS.STYLE.ID,
+      matches: [urlPattern],
+    },
+    {
+      id: CONSTANTS.CONTENT.ID,
+      js: [CONSTANTS.CONTENT.PATH],
+      matches: [urlPattern],
+    },
+  ]);
+};
 
-  // const permissions = { origins: [matchPattern] };
-  // const granted = await browser.permissions.request(permissions);
-  // if (!granted) return;
+const activateTab = async (id: number) => {
+  await browser.scripting.insertCSS({
+    files: [CONSTANTS.STYLE.PATH],
+    origin: "USER",
+    target: { tabId: id },
+  });
 
-  browser.scripting.unregisterContentScripts(() => {
-    browser.scripting.registerContentScripts([
-      {
-        id: STYLE_ID,
-        matches: [matchPattern],
-        css: [CSS_PATH],
-      },
-    ]);
+  await browser.scripting.executeScript({
+    files: [CONSTANTS.CONTENT.PATH],
+    target: { tabId: id },
   });
 };
 
-const styleTab = async (tabId: number) => {
-  const cssInjection: chrome.scripting.CSSInjection = {
-    files: [CSS_PATH],
-    origin: "USER",
-    target: { tabId },
-  };
+async function sendTabMessage(
+  id: number,
+  message: string,
+  prepare?: (id: number) => Promise<void>,
+) {
+  try {
+    return await browser.tabs.sendMessage(id, message);
+  } catch (error) {
+    if (!prepare) throw error;
 
-  browser.scripting.removeCSS(cssInjection);
-  browser.scripting.insertCSS(cssInjection);
-};
+    await prepare(id);
+    return await sendTabMessage(id, message);
+  }
+}
