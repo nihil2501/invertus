@@ -1,16 +1,23 @@
 const EXTENSION_ID = "invertus";
 
 export const CONSTANTS = {
-  MESSAGE: `${EXTENSION_ID}-toggle`,
   CLASS: EXTENSION_ID,
 
-  STYLE: {
-    ID: `${EXTENSION_ID}-style`,
-    PATH: "content-scripts/style.css",
+  MESSAGES: {
+    TOGGLE: `${EXTENSION_ID}-toggle`,
+    VISITED: `${EXTENSION_ID}-visited`,
   },
-  CONTENT: {
-    ID: `${EXTENSION_ID}-content`,
-    PATH: "content-scripts/content.js",
+
+  SCRIPTS: {
+    STYLE: {
+      ID: `${EXTENSION_ID}-style`,
+      PATH: "content-scripts/style.css",
+    },
+
+    CONTENT: {
+      ID: `${EXTENSION_ID}-content`,
+      PATH: "content-scripts/content.js",
+    },
   },
 };
 

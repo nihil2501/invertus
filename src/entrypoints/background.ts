@@ -1,27 +1,39 @@
 export default defineBackground(() => {
   browser.action.onClicked.addListener(async ({ id, url }) => {
+    console.debug("action", { id });
+    if (!id) return;
+
+    let activated: boolean;
     try {
-      // if (id) await activateTab(id);
-
-      const hostnamePattern = getValidHostnamePattern(url);
-      if (!hostnamePattern) return;
-
-      // await activateUrlPattern(hostnamePattern);
-      const tabs = await browser.tabs.query({ url: hostnamePattern });
-
-      for (const tab of tabs) {
-        if (!tab.id) continue;
-
-        // TODO: Add concurrency to this.
-        const activated = (await sendTabMessage(
-          tab.id,
-          CONSTANTS.MESSAGE,
-          activateTab,
-        )) as boolean; // Umm, would we get disagreement for this hostname?
-      }
+      console.log("huhhhh");
+      activated = await sendTabToggle(id);
+      console.log("wtf 1", { activated });
     } catch (error) {
-      console.error(error);
+      console.log("what");
+      await injectTabScripts(id);
+      activated = true;
     }
+
+    console.log("lol 1");
+    const hostnamePattern = getValidHostnamePattern(url);
+    if (!hostnamePattern) return;
+    console.log("lol 2");
+
+    const tabs = await browser.tabs.query({ url: hostnamePattern });
+    console.debug(
+      "tabs",
+      tabs.map((tab) => tab.id),
+    );
+
+    const tabSends = tabs.flatMap((tab) => {
+      if (!tab.id) return [];
+      if (tab.id === id) return [];
+
+      console.log("wtf 2", { activated });
+      return [sendTabToggle(tab.id, activated).catch()];
+    });
+
+    await Promise.all(tabSends);
   });
 });
 
@@ -33,42 +45,38 @@ const activateUrlPattern = async (urlPattern: string) => {
   await browser.scripting.unregisterContentScripts();
   await browser.scripting.registerContentScripts([
     {
-      css: [CONSTANTS.STYLE.PATH],
-      id: CONSTANTS.STYLE.ID,
+      css: [CONSTANTS.SCRIPTS.STYLE.PATH],
+      id: CONSTANTS.SCRIPTS.STYLE.ID,
       matches: [urlPattern],
     },
     {
-      id: CONSTANTS.CONTENT.ID,
-      js: [CONSTANTS.CONTENT.PATH],
+      id: CONSTANTS.SCRIPTS.CONTENT.ID,
+      js: [CONSTANTS.SCRIPTS.CONTENT.PATH],
       matches: [urlPattern],
     },
   ]);
 };
 
-const activateTab = async (id: number) => {
+const sendTabToggle = (id: number, activated?: boolean) => {
+  console.debug("sendTabToggle", { id, activated });
+
+  return browser.tabs.sendMessage(id, {
+    type: CONSTANTS.MESSAGES.TOGGLE,
+    payload: activated,
+  });
+};
+
+const injectTabScripts = async (id: number) => {
+  console.debug("injectTabScripts", { id });
+
   await browser.scripting.insertCSS({
-    files: [CONSTANTS.STYLE.PATH],
+    files: [CONSTANTS.SCRIPTS.STYLE.PATH],
     origin: "USER",
     target: { tabId: id },
   });
 
   await browser.scripting.executeScript({
-    files: [CONSTANTS.CONTENT.PATH],
+    files: [CONSTANTS.SCRIPTS.CONTENT.PATH],
     target: { tabId: id },
   });
 };
-
-async function sendTabMessage(
-  id: number,
-  message: string,
-  prepare?: (id: number) => Promise<void>,
-) {
-  try {
-    return await browser.tabs.sendMessage(id, message);
-  } catch (error) {
-    if (!prepare) throw error;
-
-    await prepare(id);
-    return await sendTabMessage(id, message);
-  }
-}
