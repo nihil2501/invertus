@@ -1,4 +1,5 @@
 export default defineBackground(() => {
+  browser.tabs.create({ url: browser.runtime.getURL("/options.html") });
   browser.action.onClicked.addListener(async ({ id, url }) => {
     console.debug("action", { id });
     if (!id) return;
@@ -6,7 +7,19 @@ export default defineBackground(() => {
     let activated: boolean;
     try {
       console.log("huhhhh");
-      activated = await sendTabToggle(id);
+      const newLocal = await sendTabToggle(id);
+      console.debug({ newLocal });
+      // activated = await sendTabToggle(id);
+      switch (newLocal) {
+        case "yes":
+          activated = true;
+          break;
+        case "no":
+          activated = false;
+          break;
+        default:
+          throw "lolololol";
+      }
       console.log("wtf 1", { activated });
     } catch (error) {
       console.log("what");

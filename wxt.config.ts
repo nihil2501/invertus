@@ -16,4 +16,12 @@ export default defineConfig({
       },
     },
   },
+  webExt: {
+    startUrls: ["developer.chrome.com", "developer.chrome.com"],
+    chromiumArgs: [
+      "--auto-open-devtools-for-tabs",
+      "--user-data-dir=./.wxt/chrome-data",
+      "--hide-crash-restore-bubble",
+    ],
+  },
 });

@@ -5,7 +5,7 @@ export default defineContentScript({
     browser.runtime.onMessage.addListener(({ type, payload: activated }) => {
       if (type !== CONSTANTS.MESSAGES.TOGGLE) return;
       console.debug("message", { activated });
-      return toggle(activated);
+      return toggle(activated) ? "yes" : "no";
     });
 
     console.debug("load", { activated: true });
