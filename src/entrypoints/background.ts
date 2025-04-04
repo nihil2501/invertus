@@ -1,52 +1,32 @@
 export default defineBackground(() => {
+  // Just used for debugging.
   browser.tabs.create({ url: browser.runtime.getURL("/options.html") });
+
   browser.action.onClicked.addListener(async ({ id, url }) => {
-    console.debug("action", { id });
     if (!id) return;
 
     let activated: boolean;
     try {
-      console.log("huhhhh");
-      const newLocal = await sendTabToggle(id);
-      console.debug({ newLocal });
-      // activated = await sendTabToggle(id);
-      switch (newLocal) {
-        case "yes":
-          activated = true;
-          break;
-        case "no":
-          activated = false;
-          break;
-        default:
-          throw "lolololol";
-      }
-      console.log("wtf 1", { activated });
+      activated = await sendTabToggle(id);
     } catch (error) {
-      console.log("what");
       await injectTabScripts(id);
       activated = true;
     }
 
-    console.log("lol 1");
     const hostnamePattern = getValidHostnamePattern(url);
     if (!hostnamePattern) return;
-    console.log("lol 2");
 
     const tabs = await browser.tabs.query({ url: hostnamePattern });
-    console.debug(
-      "tabs",
-      tabs.map((tab) => tab.id),
+    await Promise.allSettled(
+      tabs.map((tab) => {
+        if (!tab.id) return;
+        if (tab.id === id) return;
+
+        return sendTabToggle(tab.id, activated).catch((error) => {
+          console.error(error);
+        });
+      }),
     );
-
-    const tabSends = tabs.flatMap((tab) => {
-      if (!tab.id) return [];
-      if (tab.id === id) return [];
-
-      console.log("wtf 2", { activated });
-      return [sendTabToggle(tab.id, activated).catch()];
-    });
-
-    await Promise.all(tabSends);
   });
 });
 
@@ -71,8 +51,6 @@ const activateUrlPattern = async (urlPattern: string) => {
 };
 
 const sendTabToggle = (id: number, activated?: boolean) => {
-  console.debug("sendTabToggle", { id, activated });
-
   return browser.tabs.sendMessage(id, {
     type: CONSTANTS.MESSAGES.TOGGLE,
     payload: activated,
@@ -80,8 +58,6 @@ const sendTabToggle = (id: number, activated?: boolean) => {
 };
 
 const injectTabScripts = async (id: number) => {
-  console.debug("injectTabScripts", { id });
-
   await browser.scripting.insertCSS({
     files: [CONSTANTS.SCRIPTS.STYLE.PATH],
     origin: "USER",

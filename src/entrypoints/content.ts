@@ -2,13 +2,14 @@ export default defineContentScript({
   registration: "runtime",
 
   main() {
-    browser.runtime.onMessage.addListener(({ type, payload: activated }) => {
-      if (type !== CONSTANTS.MESSAGES.TOGGLE) return;
-      console.debug("message", { activated });
-      return toggle(activated) ? "yes" : "no";
-    });
+    browser.runtime.onMessage.addListener(
+      ({ type, payload: activated }, _sender, sendResponse) => {
+        if (type !== CONSTANTS.MESSAGES.TOGGLE) return false;
+        sendResponse(toggle(activated));
+        return false;
+      },
+    );
 
-    console.debug("load", { activated: true });
     toggle(true);
 
     // This script can be loaded in response to an explicit user intent to
@@ -33,15 +34,5 @@ export default defineContentScript({
 });
 
 const toggle = (activated?: boolean) => {
-  const result = document.documentElement.classList.toggle(
-    CONSTANTS.CLASS,
-    activated,
-  );
-
-  console.debug("toggle", {
-    classes: document.documentElement.classList,
-    result,
-  });
-
-  return result;
+  return document.documentElement.classList.toggle(CONSTANTS.CLASS, activated);
 };
