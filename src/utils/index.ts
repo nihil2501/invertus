@@ -20,26 +20,3 @@ export const CONSTANTS = {
     },
   },
 };
-
-export const getValidHostnamePattern = (url = "") => {
-  try {
-    const parsedUrl = new URL(url);
-    for (const { value, property } of URL_INVALID_RULES) {
-      if (parsedUrl[property] === value) return;
-    }
-
-    return `*://${parsedUrl.hostname}/*`;
-  } catch (e) {
-    if (e instanceof TypeError) return;
-    throw e;
-  }
-};
-
-const URL_INVALID_RULES: Array<{
-  property: "hostname" | "protocol";
-  value: string;
-}> = [
-  { property: "hostname", value: "ogs.google.com" },
-  { property: "protocol", value: "chrome:" },
-  { property: "protocol", value: "about:" },
-];

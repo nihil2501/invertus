@@ -3,6 +3,8 @@ export default defineBackground(() => {
   browser.tabs.create({ url: browser.runtime.getURL("/options.html") });
 
   browser.action.onClicked.addListener(async ({ id, url }) => {
+    const hostnamePattern = getValidHostnamePattern(url);
+    if (!hostnamePattern) return;
     if (!id) return;
 
     let activated: boolean;
@@ -12,9 +14,6 @@ export default defineBackground(() => {
       await injectTabScripts(id);
       activated = true;
     }
-
-    const hostnamePattern = getValidHostnamePattern(url);
-    if (!hostnamePattern) return;
 
     const tabs = await browser.tabs.query({ url: hostnamePattern });
     await Promise.allSettled(
@@ -68,4 +67,16 @@ const injectTabScripts = async (id: number) => {
     files: [CONSTANTS.SCRIPTS.CONTENT.PATH],
     target: { tabId: id },
   });
+};
+
+const getValidHostnamePattern = (url = "") => {
+  try {
+    const { protocol, hostname } = new URL(url);
+    if (protocol !== "http:" && protocol !== "https:") return;
+
+    return `*://${hostname}/*`;
+  } catch (e) {
+    if (e instanceof TypeError) return;
+    throw e;
+  }
 };
