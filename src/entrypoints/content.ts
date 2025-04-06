@@ -4,7 +4,7 @@ export default defineContentScript({
   main() {
     browser.runtime.onMessage.addListener(
       ({ type, payload: activated }, _sender, sendResponse) => {
-        if (type !== CONSTANTS.MESSAGES.TOGGLE) return false;
+        if (type !== MESSAGE.TOGGLE) return false;
         sendResponse(toggle(activated));
         return false;
       },
@@ -29,10 +29,10 @@ export default defineContentScript({
     //
     // In the explicit intent case, there is other code that notices the event
     // too, which makes this message redundant, but in a way that is harmless.
-    browser.runtime.sendMessage(CONSTANTS.MESSAGES.VISITED);
+    browser.runtime.sendMessage(MESSAGE.VISITED);
   },
 });
 
 const toggle = (activated?: boolean) => {
-  return document.documentElement.classList.toggle(CONSTANTS.CLASS, activated);
+  return document.documentElement.classList.toggle(EXTENSION_ID, activated);
 };
