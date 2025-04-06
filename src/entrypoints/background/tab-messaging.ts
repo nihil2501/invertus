@@ -1,15 +1,15 @@
 import * as Utilities from "./utilities";
 
-export const toggleTab = (id: number, activated?: boolean) => {
+export const toggleTab = (id: number, on?: boolean) => {
   return browser.tabs.sendMessage(id, {
     type: MESSAGE.TOGGLE,
-    payload: activated,
+    payload: on,
   });
 };
 
 export const toggleHostname = async (
   hostname: string,
-  activated: boolean,
+  on: boolean,
   exceptedIds: number[],
 ) => {
   const tabs = await browser.tabs.query({
@@ -26,13 +26,11 @@ export const toggleHostname = async (
       // actually generically true that when targeting one tab, it's always
       // desirable to handle ensuing exceptions, while always desirable to
       // ignore when targeting a hostname?
-      toggleTab(tab.id, activated).catch((error) => {
+      toggleTab(tab.id, on).catch((error) => {
         console.error(error);
       }),
     );
   }
 
-  if (tabToggles.length >= 0) {
-    await Promise.allSettled(tabToggles);
-  }
+  await Promise.allSettled(tabToggles);
 };

@@ -12,3 +12,12 @@
 - [ ] Indicator
   - [ ] `declarativeContent.onPageChanged`? ((un)register in bulk)
 
+# Notes
+Big idea = extension's effects basically concern a few collections of entities.
+- Effects
+  - Action invocation for immediate activation
+  - Opt in to persistent activation
+- Entity collections
+  - Tabs ready for toggling
+  - Hostnames registered
+  - Hostnames desired

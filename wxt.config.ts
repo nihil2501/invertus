@@ -8,10 +8,17 @@ export default defineConfig({
     action: {},
     commands: {
       _execute_action: {
-        description: "Invert this webpage's colors.",
+        description: "Remember recently inverted webpages.",
         suggested_key: {
           default: "Ctrl+I",
           mac: "MacCtrl+I",
+        },
+      },
+      toggle: {
+        description: "Invert this webpage's colors.",
+        suggested_key: {
+          default: "Ctrl+Shift+I",
+          mac: "MacCtrl+Shift+I",
         },
       },
     },

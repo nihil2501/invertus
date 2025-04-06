@@ -12,21 +12,26 @@ export default defineBackground(() => {
     if (!hostname) return;
     if (!id) return;
 
-    let activated: boolean;
+    let on: boolean;
     try {
-      activated = await TabMessaging.toggleTab(id);
+      on = await TabMessaging.toggleTab(id);
     } catch (error) {
       await ContentScriptInstallation.inject(id);
-      activated = true;
+      on = true;
     }
 
-    await TabMessaging.toggleHostname(hostname, activated, [id]);
+    await TabMessaging.toggleHostname(hostname, on, [id]);
 
-    if (activated) {
+    if (on) {
       await HostnameStorage.refresh(hostname);
     } else {
       await HostnameStorage.remove(hostname);
     }
+  });
+
+  browser.commands.onCommand.addListener(async () => {
+    const values = await HostnameStorage.get();
+    console.debug({ values });
   });
 });
 

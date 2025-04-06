@@ -3,9 +3,9 @@ export default defineContentScript({
 
   main() {
     browser.runtime.onMessage.addListener(
-      ({ type, payload: activated }, _sender, sendResponse) => {
+      ({ type, payload: on }, _sender, sendResponse) => {
         if (type !== MESSAGE.TOGGLE) return false;
-        sendResponse(toggle(activated));
+        sendResponse(toggle(on));
         return false;
       },
     );
@@ -13,13 +13,14 @@ export default defineContentScript({
     toggle(true);
 
     // This script can be loaded in response to an explicit user intent to
-    // activate the extension; when they manually invoke the extension's action.
+    // toggle on the extension; when they manually invoke the extension's
+    // action.
     //
     // In such cases, we handle the ramifications of that intent at the call
-    // site that activates the extension.
+    // site that toggles on the extension.
     //
     // This script can also load without the user explicitly expressing intent
-    // to activate the extension; at some point in the past they asked for the
+    // to toggle on the extension; at some point in the past they asked for the
     // extension to be active persistently for some host, and have now navigated
     // to that host.
     //
@@ -33,6 +34,6 @@ export default defineContentScript({
   },
 });
 
-const toggle = (activated?: boolean) => {
-  return document.documentElement.classList.toggle(EXTENSION_ID, activated);
+const toggle = (on?: boolean) => {
+  return document.documentElement.classList.toggle(EXTENSION_ID, on);
 };
