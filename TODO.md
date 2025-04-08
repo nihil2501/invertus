@@ -1,4 +1,5 @@
 # TODO
+- [ ] Smart invert; attempt to sample background to determine inversion degree?
 - [ ] Fire-and-forget opportunities
 - [ ] Effect.ts
 - [ ] Storage update fn
