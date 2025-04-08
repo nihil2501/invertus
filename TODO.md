@@ -1,4 +1,5 @@
 # TODO
+- [ ] Argument for removing toggle on -> hostname refresh?
 - [ ] What is wrong with command name?
 - [ ] `constants.ts` and `EXTENSION_ID` qualifier everywhere?
 - [ ] Listen to permissions
