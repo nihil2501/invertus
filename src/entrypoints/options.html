@@ -4,16 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Options Title</title>
-
+    <title>Invertus</title>
     <style>
       body {
         background: black;
-        color: white;
+        font-family: sans-serif;
+        padding: 10px;
+        min-width: 200px;
+      }
+      button {
+        padding: 6px 12px;
       }
     </style>
   </head>
   <body>
-    <h1>Just used for debugging</h1>
+    <button id="remember">Remember inversions</button>
+    <script type="module">
+      document.getElementById("remember").addEventListener("click", async () => {
+        const hostnames = await Hostnames.get();
+        await Installation.register(hostnames);
+      });
+    </script>
   </body>
 </html>
