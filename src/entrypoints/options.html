@@ -14,15 +14,46 @@
       }
       button {
         padding: 6px 12px;
+        margin-bottom: 10px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 4px;
+      }
+      #feedback {
+        color: lime;
       }
     </style>
   </head>
   <body>
     <button id="remember">Remember inversions</button>
+    <div id="feedback"></div>
+
     <script type="module">
-      document.getElementById("remember").addEventListener("click", async () => {
-        const hostnames = await Hostnames.get();
-        await Installation.register(hostnames);
+      const button = document.getElementById("remember");
+      const feedback = document.getElementById("feedback");
+
+      button.addEventListener("click", async (event) => {
+        const { added, removed } = await Installation.register();
+
+        feedback.innerHTML = `
+          <div><strong>Added:</strong>
+            <ul>
+              ${added.length > 0
+                ? added.map(h => `<li>${h}</li>`).join("")
+                : "<li>None</li>"}
+            </ul>
+          </div>
+          <div><strong>Removed:</strong>
+            <ul>
+              ${removed.length > 0
+                ? removed.map(h => `<li>${h}</li>`).join("")
+                : "<li>None</li>"}
+            </ul>
+          </div>
+        `;
       });
     </script>
   </body>

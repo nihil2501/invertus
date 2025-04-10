@@ -12,36 +12,50 @@ export const Installation = {
     });
   },
 
-  async register(hostnames: string[]) {
+  async register() {
+    const after = await Hostnames.get();
+    let before: string[] = [];
+
     let { origins } = await browser.permissions.getAll();
     if (origins) {
       origins = origins.filter((origin) => !REQUIRED_ORIGINS.includes(origin));
+      before = origins.map(getHostname);
+
       await browser.permissions.remove({ origins });
     }
 
-    origins = hostnames.map(getHostnamePattern);
-    browser.permissions.request({ origins });
+    origins = after.map(getHostnamePattern);
+    await browser.permissions.request({ origins });
 
     await browser.scripting.unregisterContentScripts();
-    if (origins.length === 0) return;
+    if (origins.length > 0) {
+      await browser.scripting.registerContentScripts([
+        {
+          css: [INSTANCE.STYLE.PATH],
+          id: INSTANCE.STYLE.ID,
+          matches: origins,
+        },
+        {
+          id: INSTANCE.CONTENT.ID,
+          js: [INSTANCE.CONTENT.PATH],
+          matches: origins,
+        },
+      ]);
+    }
 
-    await browser.scripting.registerContentScripts([
-      {
-        css: [INSTANCE.STYLE.PATH],
-        id: INSTANCE.STYLE.ID,
-        matches: origins,
-      },
-      {
-        id: INSTANCE.CONTENT.ID,
-        js: [INSTANCE.CONTENT.PATH],
-        matches: origins,
-      },
-    ]);
+    const added = after.filter((h) => !before.includes(h));
+    const removed = before.filter((h) => !after.includes(h));
+
+    return { added, removed };
   },
 };
 
 const getHostnamePattern = (hostname: string) => {
   return `*://${hostname}/*`;
+};
+
+const getHostname = (hostnamePattern: string) => {
+  return hostnamePattern.slice(4, -2);
 };
 
 const REQUIRED_ORIGINS = ["http://localhost/*"];
