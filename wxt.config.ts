@@ -24,7 +24,7 @@ export default defineConfig({
     },
   },
   webExt: {
-    startUrls: ["developer.chrome.com", "developer.chrome.com"],
+    startUrls: ["developer.chrome.com", "news.ycombinator.com"],
     chromiumArgs: [
       "--auto-open-devtools-for-tabs",
       "--user-data-dir=./.wxt/chrome-data",

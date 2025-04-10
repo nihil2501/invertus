@@ -23,6 +23,8 @@ export const Installation = {
     browser.permissions.request({ origins });
 
     await browser.scripting.unregisterContentScripts();
+    if (origins.length === 0) return;
+
     await browser.scripting.registerContentScripts([
       {
         css: [INSTANCE.STYLE.PATH],
