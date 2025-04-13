@@ -3,10 +3,9 @@ export default defineContentScript({
 
   main() {
     browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-      if (message !== MESSAGE.TOGGLE) return false;
+      if (MESSAGE.TOGGLE !== message) return;
 
       sendResponse(toggle());
-      return false;
     });
 
     browser.runtime.sendMessage(MESSAGE.VISITED);
@@ -14,7 +13,4 @@ export default defineContentScript({
   },
 });
 
-const toggle = () => {
-  const classes = document.documentElement.classList;
-  return classes.toggle(EXTENSION_ID);
-};
+const toggle = () => document.documentElement.classList.toggle("invertus");

@@ -1,5 +1,8 @@
 # TODO
+- [ ] Compose behavior in `hostnames.ts` (rather than passing switch into one fn)
+- [ ] Check on storage quota logic
 - [ ] `constants.ts` and `EXTENSION_ID` qualifier everywhere?
+  - [ ] Maybe -> `messaging.ts` w/ `listen` abstraction
 - [ ] Smart invert; attempt to sample background to determine inversion degree?
 - [ ] Fire-and-forget opportunities
 - [ ] Effect.ts
