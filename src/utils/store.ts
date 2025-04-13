@@ -45,5 +45,5 @@ type Op = keyof typeof OP;
 const OP = { REFRESH: "REFRESH", REMOVE: "REMOVE" } as const;
 
 const KEY: StorageItemKey = "sync:hostnames";
-const VALUES_LENGTH_MAX = 8_192;
+const VALUES_LENGTH_MAX = 8_192 / 2; // Half; just to be safe.
 const VALUE_DELIMITER = ",";
