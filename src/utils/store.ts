@@ -1,6 +1,19 @@
-export const refresh = (v: string) => update(OP.REFRESH, v);
-export const remove = (v: string) => update(OP.REMOVE, v);
-export const get = async () => (await getRaw()).split(VALUE_DELIMITER).slice(1);
+export const Store = {
+  refresh(v: string) {
+    return update(OP.REFRESH, v);
+  },
+
+  remove(v: string) {
+    return update(OP.REMOVE, v);
+  },
+
+  async get() {
+    const valuesRaw = await getRaw();
+    const values = valuesRaw.split(VALUE_DELIMITER);
+    values.shift();
+    return values;
+  },
+};
 
 /*******************************************************************************
  *                                                                             *

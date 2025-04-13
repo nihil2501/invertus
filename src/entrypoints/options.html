@@ -15,7 +15,7 @@
 
       #remember-button {
         padding: 6px 12px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
       }
 
       #remember-feedback {
@@ -39,11 +39,14 @@
       const button = document.getElementById("remember-button");
       const feedback = document.getElementById("remember-feedback");
 
-      const setFeedback = async (message) => {
-        const foo =
-          await browser.runtime.sendMessage(message);
-        console.log({ foo });
-        const { added, removed } = foo;
+      const setFeedback = async (preview) => {
+        const hostnames = await Store.get();
+        const { added, removed } = preview
+          ? await Install.preview(hostnames)
+          : await Install.register(hostnames)
+          ;
+
+        const title = preview ? "Previewing" : "Executed";
 
         const renderHostnames = (hostnames) => {
           if (hostnames.length === 0) hostnames.push("None");
@@ -51,10 +54,9 @@
         };
 
         feedback.innerHTML = `
-          ${MESSAGE.REMEMBER.PREVIEW
-            ? "<div><strong>Preview</strong></div>"
-            : ""
-          }
+          <div>
+            <strong>${title}</strong>
+          </div>
 
           <div>
             <strong>Added</strong>
@@ -68,10 +70,10 @@
         `;
       };
 
-      setFeedback(MESSAGE.REMEMBER.PREVIEW);
-      button.addEventListener("click", () => {
-        setFeedback(MESSAGE.REMEMBER.EXECUTE);
-      });
+      setFeedback(true);
+      button.addEventListener("click", () =>
+        setFeedback(false)
+      );
     </script>
   </body>
 </html>

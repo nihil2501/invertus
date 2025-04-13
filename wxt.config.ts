@@ -14,7 +14,7 @@ export default defineConfig({
           mac: "MacCtrl+I",
         },
       },
-      "remember-launch": {
+      remember: {
         description: "Remember recently inverted webpages.",
         suggested_key: {
           default: "Ctrl+Shift+I",

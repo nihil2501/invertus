@@ -1,6 +1,3 @@
-import * as Install from "./install";
-import * as Store from "./store";
-
 export default defineBackground(() => {
   /*****************************************************************************
    *                                                                           *
@@ -43,49 +40,15 @@ export default defineBackground(() => {
 
   /*****************************************************************************
    *                                                                           *
-   *                             REMEMBER / LAUNCH                             *
+   *                                  REMEMBER                                 *
    *                                                                           *
    ****************************************************************************/
   browser.commands.onCommand.addListener((message) => {
-    if (MESSAGE.REMEMBER.LAUNCH !== message) return;
+    if (MESSAGE.REMEMBER !== message) return;
 
     const url = browser.runtime.getURL("/options.html");
     browser.tabs.create({ url });
   });
-
-  /*****************************************************************************
-   *                                                                           *
-   *                             REMEMBER / PREVIEW                            *
-   *                                                                           *
-   ****************************************************************************/
-  browser.runtime.onMessage.addListener(
-    async (message, _sender, sendResponse) => {
-      if (MESSAGE.REMEMBER.PREVIEW !== message) return;
-
-      const hostnames = await Store.get();
-      const diff = await Install.preview(hostnames);
-      sendResponse(diff);
-
-      return true;
-    },
-  );
-
-  /*****************************************************************************
-   *                                                                           *
-   *                             REMEMBER / EXECUTE                            *
-   *                                                                           *
-   ****************************************************************************/
-  browser.runtime.onMessage.addListener(
-    async (message, _sender, sendResponse) => {
-      if (MESSAGE.REMEMBER.EXECUTE !== message) return;
-
-      const hostnames = await Store.get();
-      const diff = await Install.register(hostnames);
-      sendResponse(diff);
-
-      return true;
-    },
-  );
 });
 
 const getHostname = (url?: string) => {

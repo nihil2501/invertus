@@ -13,4 +13,7 @@ export default defineContentScript({
   },
 });
 
-const toggle = () => document.documentElement.classList.toggle("invertus");
+const toggle = () => {
+  const classes = document.documentElement.classList;
+  return classes.toggle("invertus");
+};
