@@ -8,26 +8,15 @@
     <style>
       body {
         background: black;
-        font-family: sans-serif;
-        padding: 10px;
-        min-width: 200px;
+        padding: 30px;
       }
 
-      #remember-button {
-        padding: 6px 12px;
-        margin-bottom: 20px;
+      #remember-button:hover {
+        border-color: lime;
       }
 
       #remember-feedback {
-        color: lime;
-      }
-
-      #remember-feedback ul {
-        padding-left: 20px;
-      }
-
-      #remember-feedback li {
-        margin-bottom: 4px;
+        color: white;
       }
     </style>
   </head>
@@ -46,7 +35,7 @@
           : await Install.register(hostnames)
           ;
 
-        const title = preview ? "Previewing" : "Executed";
+        const title = preview ? "Previewing..." : "Executed!";
 
         const renderHostnames = (hostnames) => {
           if (hostnames.length === 0) hostnames.push("None");
@@ -54,17 +43,15 @@
         };
 
         feedback.innerHTML = `
-          <div>
-            <strong>${title}</strong>
-          </div>
+          <h2>${title}</h2>
 
           <div>
-            <strong>Added</strong>
+            <h3>Added</h3>
             <ul>${renderHostnames(added)}</ul>
           </div>
 
           <div>
-            <strong>Removed</strong>
+            <h3>Removed</h3>
             <ul>${renderHostnames(removed)}</ul>
           </div>
         `;
