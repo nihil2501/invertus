@@ -11,6 +11,7 @@ export const Store = {
     const valuesRaw = await getRaw();
     const values = valuesRaw.split(VALUE_DELIMITER);
     values.shift();
+    console.debug("Store.get()", values);
     return values;
   },
 };
