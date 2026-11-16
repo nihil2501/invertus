@@ -12,9 +12,9 @@ export default defineBackground(() => {
     let on: boolean;
     try {
       on = await browser.tabs.sendMessage(id, MESSAGE.TOGGLE);
-    } catch (error) {
+    } catch {
       await Install.inject(id);
-      on = true;
+      return;
     }
 
     if (on) {
